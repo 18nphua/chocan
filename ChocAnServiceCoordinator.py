@@ -1,13 +1,14 @@
 '''
-File: ChocAnManger.py
+File: ChocAnServiceCoordinator.py
 Name: Nicholas Phua 
-Desc: Manager class WIP
+Desc: WIP
 
 '''
-class chocan_manger():
+class chocan_service_cord():
     def __init__():
         pass
 
+    #Manager functions
     def add_member():
         pass
 
@@ -23,3 +24,12 @@ class chocan_manger():
     def generate_weekly_report():
         pass
 
+    #Provider functions
+    def logging_services():
+        pass
+
+    def bill_members():
+        pass
+
+    def member_report():
+        pass 
