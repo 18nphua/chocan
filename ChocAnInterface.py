@@ -1,3 +1,10 @@
+"""
+File: ChocAnInterface.py
+Name: Nicholas Phua 
+Desc: This is the Interface Class which will work as an interface between 
+      the user and the manager/provider classes.
+
+"""
 from ChocAnProvider import *
 from ChocAnManager import *
 
@@ -9,10 +16,12 @@ class chocan_interface():
     def start_menu(self):
         pass
 
+    #Provider menu this will work with the provider class
     def provider_menu(self):
         pass
     
-    def manger_menu(self):
+    #Manager menu this will work with the provider class
+    def manager_menu(self):
         pass
 
 

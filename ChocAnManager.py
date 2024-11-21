@@ -1,6 +1,8 @@
 '''
-Manager class which manages the data management the data
-related to the SQL data base.
+File: ChocAnManger.py
+Name: Nicholas Phua 
+Desc: Manager class WIP
+
 '''
 class chocan_manger():
     def __init__():

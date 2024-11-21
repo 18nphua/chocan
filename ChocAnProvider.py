@@ -1,5 +1,8 @@
 '''
-Provider class
+File: ChocAnProvider.py
+Name: Nicholas Phua 
+Desc: Provider class WIP
+
 '''
 class chocan_provider():
     def __init__():
