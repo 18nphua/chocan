@@ -44,7 +44,8 @@ class db_client():
         return
     
     def remove_member(self, name):
-        # to implement
+        #delete the member
+        self.mem_cur.execute(f"DELETE FROM members WHERE name = ?", (name))#later change it to ID, but for now its name
         return
     
     # PROVIDER FUNCTIONALITY
