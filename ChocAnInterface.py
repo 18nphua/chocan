@@ -5,11 +5,11 @@ Desc: This is the Interface Class which will work as an interface between
       the user and the manager/provider classes.
 
 """
-from ChocAnProvider import *
-from ChocAnManager import *
+from ChocAnServiceCoordinator import *
 
 class chocan_interface():
     def __init__(self):
+        user_cord = chocan_service_cord()
         self.user_input = 0
 
     #Menu that shows up on startup
