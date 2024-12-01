@@ -11,7 +11,7 @@ Note: This will delete all database files and recreate them.
 """
 
 databases   = ['members.db', 'providers.db', 'services_provided_log.db']
-schemas     = ['(id int, name varchar, street_address varchar, city varchar, state varchar, zip_code int, balance float, PRIMARY KEY (id))',
+schemas     = ['(id int, name varchar, phone_number int, street_address varchar, city varchar, state varchar, zip_code int, balance float, PRIMARY KEY (id))',
                '(id int, name varchar, street_address varchar, city varchar, state varchar, zip_code int, PRIMARY KEY(id))',
                '(date_service_provided date, date_service_logged date, provider_id, member_id int, member_name varchar, service_code int, fee float)']
 
