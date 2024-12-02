@@ -19,7 +19,7 @@ class db_client():
         self.provider_cur   = self.provider_db.cursor()
         self.spl_cur        = self.spl_db.cursor()
     
-    # MEMBER FUNCTIONALITY
+    #################################### MEMBER FUNCTIONALITY ###################################
 
     #this function will be used to add new members to the database,
     #along with stopping from making duplicate members. Returns true if a 
@@ -98,7 +98,7 @@ class db_client():
         if self.mem_cur.rowcount == 0:#didn't change
             return False
         else:
-            return True#a member was edited
+            return True #a member was edited
     
 
     #the function will remove the member that has the same id as member_ID, will return true if removed
@@ -114,8 +114,10 @@ class db_client():
         else:
             return True#a member was removed
         
-    
-    # PROVIDER FUNCTIONALITY
+    #################################### END  ###################################
+
+
+    ########################### PROVIDER FUNCTIONALITY ##########################
     def add_provider(self,
                    name: str,
                    phone_number : str,
@@ -138,6 +140,8 @@ class db_client():
     def remove_provider(self, name):
         # to implement
         return
+    #################################### END  ##################################
+
     
      ################################### REPORTS AND MISCELLANEOUS ###################################
 
@@ -186,3 +190,5 @@ class db_client():
             # To implement
             return None
         return
+
+    #################################### END  ###################################
