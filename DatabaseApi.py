@@ -63,10 +63,6 @@ class db_client():
     def edit_member(self, target_id : int, attribute : str, value):
         # match case
         match attribute:
-            # change ID
-            case "id_num":
-                self.mem_cur.execute("UPDATE members SET id_num = ? WHERE id_num = ?", (value, target_id))
-
                 # change name
             case "name":
                 self.mem_cur.execute("UPDATE members SET name = ? WHERE id_num = ?", (value, target_id))
@@ -145,13 +141,48 @@ class db_client():
         #if the person deos already exist in the database then don't add
         return False #no new entries was added
     
-    def edit_provider(self, attribute : str, value):
-        # to implement
-        return
+    def edit_provider(self, target_id : int, attribute : str, value):
+        # match case
+        match attribute:
+            case "name":
+                self.provider_cur.execute("UPDATE providers SET name = ? WHERE id = ?", (value, target_id))
+
+                # change phone number
+            case "phone_number":
+                self.provider_cur.execute("UPDATE providers SET phone_number = ? WHERE id = ?", (value, target_id))
+
+                # change steet address
+            case "street_address":
+                self.provider_cur.execute("UPDATE providers SET street_address = ? WHERE id = ?", (value, target_id))
+
+                # change city
+            case "city":
+                self.provider_cur.execute("UPDATE providers SET city = ? WHERE id = ?", (value, target_id))
+
+                # change state
+            case "state":
+                self.provider_cur.execute("UPDATE providers SET state = ? WHERE id = ?", (value, target_id))
+
+                # change zip code
+            case "zip_code":
+                self.provider_cur.execute("UPDATE providers SET zip_code = ? WHERE id = ?", (value, target_id))
+            case _:
+                print("Unkown attribute")
+                return False#nothing was changed
     
-    def remove_provider(self, name):
-        # to implement
-        return
+    #the function will remove the provider that has the same id as provider_ID, will return true if removed
+    # or false if nothing was removed. One small problem with this function is that it will remove all
+    #members with the same ID, however this shouldn't be a problem since all members have a unique ID.
+    def remove_member(self, member_ID):
+        #delete the provider from the database
+        self.mem_cur.execute("DELETE FROM members WHERE id_num = ?", (member_ID,))
+            
+        #this determines wether or not the database actually removed a provider or not
+        if self.mem_cur.rowcount == 0:#didn't change, no provider removed
+            return False
+        else:
+            return True#a provider was removed
+        
     #################################### END  ##################################
 
 
@@ -189,6 +220,13 @@ class db_client():
             return id_val
         return None
 
+    def prov_get_all(self, provider_num : int):
+        result = self.provider_cur.execute(f'SELECT * FROM providers WHERE id="{provider_num}"')
+        r = result.fetchone()
+
+        if r:
+            return r
+        return None
     def get_fee_from_service_code(self, service_code):
         # to implement
         return 1.00

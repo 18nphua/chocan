@@ -9,4 +9,12 @@ else:
     print("an error has occured")
 
 
-print(client.prov_get_id_from_name("Jordan Dexter"))
+id_num = client.prov_get_id_from_name("Jordan Dexter")
+client.edit_provider(id_num, "name", "Other Jordan")
+client.edit_provider(id_num, "phone_number", 1234123123)
+client.edit_provider(id_num, "street_address", "321 Street St.")
+client.edit_provider(id_num, "state", "Arizona")
+client.edit_provider(id_num, "city", "Pheonix")
+client.edit_provider(id_num, "zip_code", 123123)
+
+print(client.prov_get_all(id_num))
