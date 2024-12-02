@@ -126,12 +126,24 @@ class db_client():
                    state : str,
                    zip_code : int):
 
-        id_num = 1 # self.gen_id()
-
-        result = self.mem_cur.execute(f"""INSERT INTO providers VALUES 
-                ({id_num}, '{name}', {phone_number}, '{street_address}', '{city}', '{state}', {zip_code});
+         #Similarly to add_member, check if there exists a provider with the same name, phone number, street adress, etc.
+        #to prevent duplications of providers in the database.
+        self.mem_cur.execute("""SELECT EXISTS (SELECT 1 FROM providers WHERE name = ? 
+                                AND phone_number = ? AND street_address = ? 
+                                AND city = ? AND state = ? AND zip_code = ?)""", 
+                                (name, phone_number, street_address, city, state, zip_code))
+        
+        if self.mem_cur.fetchone()[0] == 0:#if provider doesn't exist in the database -> add to database
+            #add the provider to the data base
+            result = self.mem_cur.execute(f"""INSERT INTO providers (id, name, phone_number, street_address, city, state, zip_code) VALUES 
+                ( NULL, '{name}', {phone_number}, '{street_address}', '{city}', '{state}', {zip_code});
                 """)
-        return
+            self.mem_cur.execute("COMMIT")
+
+            return True# a new entry was added
+        
+        #if the person deos already exist in the database then don't add
+        return False #no new entries was added
     
     def edit_provider(self, attribute : str, value):
         # to implement
@@ -142,23 +154,39 @@ class db_client():
         return
     #################################### END  ##################################
 
-    
+
      ################################### REPORTS AND MISCELLANEOUS ###################################
 
-    def mem_get_id_from_name(self, member_name):
+    def mem_get_id_from_name(self, member_name : str):
         result = self.mem_cur.execute(f'SELECT id FROM members WHERE name="{member_name}"')
+        id_val = result.fetchone()[0]
+
+        if id_val:
+            return id_val
+        return None
+    
+    def mem_get_name_from_id(self, member_id_num : int):
+        result = self.mem_cur.execute(f'SELECT name FROM members WHERE id={member_id_num}')
         name_val = result.fetchone()
 
         if name_val:
             return name_val
         return None
     
-    def mem_get_name_from_id(self, member_id_num):
-        result = self.mem_cur.execute(f'SELECT name FROM members WHERE id={member_id_num}')
-        name_val = result.fetchone()
+    def prov_get_name_from_id(self, provider_id_num : int):
+        result = self.mem_cur.execute(f'SELECT name FROM providers WHERE id={provider_id_num}')
+        name_val = result.fetchone()[0]
 
         if name_val:
             return name_val
+        return None
+    
+    def prov_get_id_from_name(self, provider_name : str):
+        result = self.mem_cur.execute(f'SELECT id FROM providers WHERE name="{provider_name}"')
+        id_val = result.fetchone()[0]
+
+        if id_val:
+            return id_val
         return None
 
     def get_fee_from_service_code(self, service_code):
