@@ -128,17 +128,17 @@ class db_client():
 
          #Similarly to add_member, check if there exists a provider with the same name, phone number, street adress, etc.
         #to prevent duplications of providers in the database.
-        self.mem_cur.execute("""SELECT EXISTS (SELECT 1 FROM providers WHERE name = ? 
+        self.provider_cur.execute("""SELECT EXISTS (SELECT 1 FROM providers WHERE name = ? 
                                 AND phone_number = ? AND street_address = ? 
                                 AND city = ? AND state = ? AND zip_code = ?)""", 
                                 (name, phone_number, street_address, city, state, zip_code))
         
-        if self.mem_cur.fetchone()[0] == 0:#if provider doesn't exist in the database -> add to database
+        if self.provider_cur.fetchone()[0] == 0:#if provider doesn't exist in the database -> add to database
             #add the provider to the data base
-            result = self.mem_cur.execute(f"""INSERT INTO providers (id, name, phone_number, street_address, city, state, zip_code) VALUES 
+            result = self.provider_cur.execute(f"""INSERT INTO providers (id, name, phone_number, street_address, city, state, zip_code) VALUES 
                 ( NULL, '{name}', {phone_number}, '{street_address}', '{city}', '{state}', {zip_code});
                 """)
-            self.mem_cur.execute("COMMIT")
+            self.provider_cur.execute("COMMIT")
 
             return True# a new entry was added
         
@@ -174,7 +174,7 @@ class db_client():
         return None
     
     def prov_get_name_from_id(self, provider_id_num : int):
-        result = self.mem_cur.execute(f'SELECT name FROM providers WHERE id={provider_id_num}')
+        result = self.provider_cur.execute(f'SELECT name FROM providers WHERE id={provider_id_num}')
         name_val = result.fetchone()[0]
 
         if name_val:
@@ -182,7 +182,7 @@ class db_client():
         return None
     
     def prov_get_id_from_name(self, provider_name : str):
-        result = self.mem_cur.execute(f'SELECT id FROM providers WHERE name="{provider_name}"')
+        result = self.provider_cur.execute(f'SELECT id FROM providers WHERE name="{provider_name}"')
         id_val = result.fetchone()[0]
 
         if id_val:
