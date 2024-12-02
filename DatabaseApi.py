@@ -139,6 +139,50 @@ class db_client():
         # to implement
         return
     
-    def generate_report(self, report_type : str, path):
+     ################################### REPORTS AND MISCELLANEOUS ###################################
+
+    def mem_get_id_from_name(self, member_name):
+        result = self.mem_cur.execute(f'SELECT id FROM members WHERE name="{member_name}"')
+        name_val = result.fetchone()
+
+        if name_val:
+            return name_val
+        return None
+    
+    def mem_get_name_from_id(self, member_id_num):
+        result = self.mem_cur.execute(f'SELECT name FROM members WHERE id={member_id_num}')
+        name_val = result.fetchone()
+
+        if name_val:
+            return name_val
+        return None
+
+    def get_fee_from_service_code(self, service_code):
         # to implement
+        return 1.00
+    
+    def log_service(self, current_date_time : str,
+                     date_service_provided : str, 
+                     provider_id_num : int, 
+                     member_id_num : int, 
+                     service_code : int):
+        
+        member_name = self.mem_get_name_from_id(member_id_num)
+        fee = self.get_fee_from_service_code(service_code)
+        result = self.spl_cur.execute(f"""INSERT INTO services_provided_log(date_service_provided, date_service_logged, provider_id, member_id, member_name, service_code, fee) VALUES
+                                      ('{current_date_time}', '{date_service_provided}', {provider_id_num}, {member_id_num}, {member_name}, {service_code}, {fee} )""")
+        result = self.spl_cur.execute(f'COMMIT')
+
+        return
+
+    def generate_report(self, report_type : str, path):
+        if report_type == "member_weekly":
+            # To implement
+            return None
+        if report_type == "provider_weekly":
+            # To implement
+            return None
+        if report_type == "all_services_weekly":
+            # To implement
+            return None
         return
