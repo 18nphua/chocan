@@ -16,7 +16,7 @@ class Provider():
         self.provider_name = None
         self.database = db.db_client()
 
-    def read_provider_num(self, database: db.db_client) -> bool: 
+    def read_provider_num(self) -> bool: 
         validated = False
         self.provider_num = v.read_int("Please enter your provider number: ")
 
