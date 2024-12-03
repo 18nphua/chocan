@@ -102,12 +102,13 @@ class db_client():
     #members with the same ID, however this shouldn't be a problem since all members have a unique ID.
     def remove_member(self, member_ID):
         #delete the member from the database
-        self.mem_cur.execute("DELETE FROM members WHERE id_num = ?", (member_ID,))
+        self.mem_cur.execute("DELETE FROM members WHERE id = ?", (member_ID,))
             
         #this determines wether or not the database actually removed a member or not
         if self.mem_cur.rowcount == 0:#didn't change, no members removed
             return False
         else:
+            self.mem_cur.execute("COMMIT")#save the change
             return True#a member was removed
         
     #################################### END  ###################################
@@ -173,14 +174,15 @@ class db_client():
     #the function will remove the provider that has the same id as provider_ID, will return true if removed
     # or false if nothing was removed. One small problem with this function is that it will remove all
     #members with the same ID, however this shouldn't be a problem since all members have a unique ID.
-    def remove_member(self, member_ID):
+    def remove_provider(self, provider_ID):
         #delete the provider from the database
-        self.mem_cur.execute("DELETE FROM members WHERE id_num = ?", (member_ID,))
+        self.provider_cur.execute("DELETE FROM providers WHERE id = ?", (provider_ID,))
             
         #this determines wether or not the database actually removed a provider or not
-        if self.mem_cur.rowcount == 0:#didn't change, no provider removed
+        if self.provider_cur.rowcount == 0:#didn't change, no provider removed
             return False
         else:
+            self.mem_cur.execute("COMMIT")#save the change
             return True#a provider was removed
         
     #################################### END  ##################################
