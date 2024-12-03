@@ -14,7 +14,7 @@ class chocan_interface():
     def __init__(self):
         #user_cord = chocan_service_cord()
         self.user_input = 0
-        provider = prov.Provider()
+        self.provider = prov.Provider()
 
     #Menu that shows up on startup
     def start_menu(self):
@@ -29,7 +29,8 @@ class chocan_interface():
             term_choice = v.read_int("Please choose which terminal to use: ")
             
             if (term_choice == 1):
-                self.provider_menu()
+                if(self.provider.read_provider_num() == True):
+                    self.provider_menu()
             elif (term_choice == 2):
                 self.manager_menu()
             elif (term_choice < 0 or term_choice > 3):
