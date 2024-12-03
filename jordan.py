@@ -17,4 +17,4 @@ client.edit_provider(id_num, "state", "Arizona")
 client.edit_provider(id_num, "city", "Pheonix")
 client.edit_provider(id_num, "zip_code", 123123)
 
-print(client.prov_get_all(id_num))
+print(client.prov_get_all(id_num))   # result = client.prov_get_all(id_num)      return [(),(), ().....] reault[0][0]
