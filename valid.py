@@ -63,7 +63,7 @@ def read_y_or_n(prompt="Please enter 'y' or 'n': "):
   answer = answer.lower()
 
   #Repeatedly prompts the user for input until 
-  #they enter valid response.
+  #they enter a valid response.
   while (answer != "n" and 
          answer != "y" and 
          answer != "no" and 
