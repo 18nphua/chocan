@@ -20,12 +20,12 @@ class chocan_interface():
     def start_menu(self):
         term_choice = 1
 
-        while(term_choice != 0):
+        while(term_choice != 3):
             print("Welcome to the ChocAn Terminal!\n")
             #print("Please choose which terminal to use\n")
             print("1. Provider Terminal")
             print("2. Manager Terminal")
-            print("0. Quit\n")
+            print("3. Quit\n")
             term_choice = v.read_int("Please choose which terminal to use: ")
             
             if (term_choice == 1):
@@ -33,7 +33,7 @@ class chocan_interface():
                     self.provider_menu()
             elif (term_choice == 2):
                 self.manager_menu()
-            elif (term_choice < 0 or term_choice > 3):
+            elif (term_choice < 1 or term_choice > 3):
                 print("\nInvalid choice selected.")
 
     #Provider menu this will work with the provider class

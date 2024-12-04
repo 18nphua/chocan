@@ -208,7 +208,7 @@ class db_client():
     
     def prov_get_name_from_id(self, provider_id_num : int):
         result = self.provider_cur.execute(f'SELECT name FROM providers WHERE id={provider_id_num}')
-        name_val = result.fetchone()[0]
+        name_val = result.fetchone()
 
         if name_val:
             return name_val

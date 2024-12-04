@@ -28,11 +28,11 @@ class Provider():
 
         if self.provider_name is not None:
             print("Validated.")
-            print(f"Welcome {self.provider_name}")
+            print(f"\nWelcome {self.provider_name}")
             validated = True
 
         else:
-            print("Invalid provider number entered.")
+            print("\nInvalid provider number entered.\n")
 
         return validated
 
