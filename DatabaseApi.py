@@ -101,6 +101,13 @@ class db_client():
     # or false if nothing was removed. One small problem with this function is that it will remove all
     #members with the same ID, however this shouldn't be a problem since all members have a unique ID.
     def remove_member(self, member_ID):
+        #validate member_ID
+        if not isinstance(member_ID, int):
+            if isinstance(member_ID, str):#if its a string then convert to a int
+                member_ID = int(member_ID)
+            else:
+                return False
+            
         #delete the member from the database
         self.mem_cur.execute("DELETE FROM members WHERE id = ?", (member_ID,))
             
@@ -175,6 +182,13 @@ class db_client():
     # or false if nothing was removed. One small problem with this function is that it will remove all
     #members with the same ID, however this shouldn't be a problem since all members have a unique ID.
     def remove_provider(self, provider_ID):
+        #validate provider_ID
+        if not isinstance(provider_ID, int):
+            if isinstance(provider_ID, str):#if its a string then convert to a int
+                provider_ID = int(provider_ID)
+            else:
+                return False
+            
         #delete the provider from the database
         self.provider_cur.execute("DELETE FROM providers WHERE id = ?", (provider_ID,))
             
@@ -182,7 +196,7 @@ class db_client():
         if self.provider_cur.rowcount == 0:#didn't change, no provider removed
             return False
         else:
-            self.mem_cur.execute("COMMIT")#save the change
+            self.provider_cur.execute("COMMIT")#save the change
             return True#a provider was removed
         
     #################################### END  ##################################
@@ -257,6 +271,16 @@ class db_client():
         if report_type == "all_services_weekly":
             # To implement
             return None
+        return
+
+
+    def calculate_member_fees(self) -> float:
+        # to implemtn
+        return
+
+
+    def calculate_provider_balances(self) -> float:
+        #to implemnt
         return
 
     #################################### END  ###################################
