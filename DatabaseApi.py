@@ -275,17 +275,31 @@ class db_client():
 
     #calculates the total fees the member made from all the services
     def calculate_member_fees(self, member_ID) -> float:
-        # to implemtn
-        return
+        #get all service_logs where the member ID is the same as member_ID
         service_list = self.spl_cur.execute("""SELECT fee FROM services_provided_log
                                                 WHERE member_id = ?""", (member_ID,))
         service_list = self.spl_cur.fetchall()
 
+        total_fee = float(0)#make a varaible to be used as the return of all the fees combined
+        for i in total_fee:#iterate through each service_log
+            total_fee += service_list[0]
 
-    def calculate_provider_balances(self) -> float:
-        #to implemnt
-    #calculate the total balance for the provider gets from ChocAn from all provided services
-        return
+        return total_fee
+
+
+    #calculate the total balance for the provider from all the services they provided
+    #returns the total balance that ChocAn owes them.
+    def calculate_provider_balances(self, provider_ID) -> float:
+        #get all service_logs where the provider ID is the same as provider_ID
+        service_list = self.spl_cur.execute("""SELECT fee FROM services_provided_log
+                                                WHERE provider_id = ?""", (provider_ID,))
+        service_list = self.spl_cur.fetchall()
+
+        total_balance = float(0)#make a varaible to be used as the return of all the fees combined
+        for i in total_balance:#iterate through each service_log
+            total_balance += service_list[0]
+
+        return total_balance
 
 
     #gets the status of whether or not the member's account is active.
