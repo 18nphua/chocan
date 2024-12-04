@@ -10,9 +10,10 @@ import sqlite3
 class db_client():
     def __init__(self):
         # Initalize connection to each db
-        self.member_db      = sqlite3.connect('members.db')
-        self.provider_db    = sqlite3.connect('providers.db')
-        self.spl_db         = sqlite3.connect('services_provided_log.db')
+        path = "database"
+        self.member_db      = sqlite3.connect(f'{path}/members.db')
+        self.provider_db    = sqlite3.connect(f'{path}/providers.db')
+        self.spl_db         = sqlite3.connect(f'{path}/services_provided_log.db')
 
         # Initialize a cursor for each db
         self.mem_cur        = self.member_db.cursor()
@@ -206,23 +207,26 @@ class db_client():
 
     def mem_get_id_from_name(self, member_name : str):
         result = self.mem_cur.execute(f'SELECT id FROM members WHERE name="{member_name}"')
-        id_val = result.fetchone()[0]
+        id_val = 10000 + result.fetchone()[0]
 
         if id_val:
             return id_val
         return None
     
     def mem_get_name_from_id(self, member_id_num : int):
+        member_id_num = member_id_num - 10000
         result = self.mem_cur.execute(f'SELECT name FROM members WHERE id={member_id_num}')
-        name_val = result.fetchone()
+
+        name_val = result.fetchone()[0]
 
         if name_val:
             return name_val
         return None
     
     def prov_get_name_from_id(self, provider_id_num : int):
+        member_id_num = member_id_num - 10000
         result = self.provider_cur.execute(f'SELECT name FROM providers WHERE id={provider_id_num}')
-        name_val = result.fetchone()
+        name_val = result.fetchone()[0]
 
         if name_val:
             return name_val
@@ -230,7 +234,7 @@ class db_client():
     
     def prov_get_id_from_name(self, provider_name : str):
         result = self.provider_cur.execute(f'SELECT id FROM providers WHERE name="{provider_name}"')
-        id_val = result.fetchone()[0]
+        id_val = 10000 + result.fetchone()[0]
 
         if id_val:
             return id_val
@@ -255,16 +259,18 @@ class db_client():
         
         member_name = self.mem_get_name_from_id(member_id_num)
         fee = self.get_fee_from_service_code(service_code)
+
+        print()
         result = self.spl_cur.execute(f"""INSERT INTO services_provided_log(date_service_provided, date_service_logged, provider_id, member_id, member_name, service_code, fee) VALUES
-                                      ('{current_date_time}', '{date_service_provided}', {provider_id_num}, {member_id_num}, {member_name}, {service_code}, {fee} )""")
+                                      ("{current_date_time}", "{date_service_provided}", {provider_id_num}, {member_id_num}, "{member_name}", {service_code}, {fee} )""")
         result = self.spl_cur.execute(f'COMMIT')
 
         return
 
-    def generate_report(self, report_type : str, path):
+    def generate_report(self, report_type, id_num : int):
         if report_type == "member_weekly":
-            # To implement
-            return None
+            result = self.spl_cur.execute(f'SELECT * FROM services_provided_log WHERE member_id={id_num}')
+            return result.fetchall()
         if report_type == "provider_weekly":
             # To implement
             return None
