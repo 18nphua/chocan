@@ -14,11 +14,13 @@ class db_client():
         self.member_db      = sqlite3.connect(f'{path}/members.db')
         self.provider_db    = sqlite3.connect(f'{path}/providers.db')
         self.spl_db         = sqlite3.connect(f'{path}/services_provided_log.db')
+        self.services_db    = sqlite3.connect(f'{path}/services.db')
 
         # Initialize a cursor for each db
         self.mem_cur        = self.member_db.cursor()
         self.provider_cur   = self.provider_db.cursor()
         self.spl_cur        = self.spl_db.cursor()
+        self.serv_cur       = self.services_db.cursor()
     
     #################################### MEMBER FUNCTIONALITY ###################################
 
@@ -247,6 +249,19 @@ class db_client():
         if r:
             return r
         return None
+    
+    def serv_get_code_from_name(self, service_name : str):
+        result = self.serv_cur.execute(f'SELECT service_code FROM services WHERE UPPER(name)=UPPER("{service_name}")')
+        result = result.fetchone()[0]
+
+        return result
+    
+    def serv_get_name_from_code(self, service_code : int):
+        result = self.serv_cur.execute(f'SELECT name FROM services WHERE service_code={service_code}')
+        result = result.fetchone()[0]
+
+        return result
+    
     def get_fee_from_service_code(self, service_code):
         # to implement
         return 1.00

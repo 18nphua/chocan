@@ -1,8 +1,9 @@
 from DatabaseApi import db_client
 
 
-"""
+
 client = db_client()
+"""
 
 if client.add_provider("Jordan Dexter", 5419937235, "1234 SE Street St.", "Portland", "Oregon", 97221):
     print("added successfully")
@@ -23,7 +24,7 @@ print(client.prov_get_all(id_num))   # result = client.prov_get_all(id_num)     
 
 """
 
-
+"""
 client = db_client()
 
 client.add_provider("John Doe 0", 1235431111, "123 Street St", "Portland", "Oregon", 97123)
@@ -52,3 +53,6 @@ client.log_service("2024/03/01 10:21:00", "2024/03/01 10:25:00", prov_id_num, me
 result = client.generate_report("member_weekly", mem_id_num)
 
 print(result)
+"""
+
+print(client.serv_get_name_from_code(230984))

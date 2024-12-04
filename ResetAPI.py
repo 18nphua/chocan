@@ -50,6 +50,7 @@ cur = service_db.cursor()
 
 for i in range(10):
     cur.execute(f'INSERT INTO services(service_code, name, fee) VALUES ({codes[i]}, "{names[i]}", {costs[i]})')
+    cur.execute("COMMIT")
 
 print("done.")
 
