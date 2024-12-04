@@ -45,7 +45,7 @@ class chocan_interface():
         provider_name = None
         database = db.db_client()
 
-        self.provider_id = valid.read_int("Please enter your provider ID number: ")
+        self.provider_id = valid.read_int("\nPlease enter your provider ID number: ")
 
         while len(str(self.provider_id)) != PROVIDER_ID_LENGTH:
             print(f"Please enter a 9-digit number.\n")
@@ -63,7 +63,7 @@ class chocan_interface():
 
         return validated
 
-    #Provider menu this will work with the provider class
+    #Allows users to view and select provider-specific actions.
     def provider_menu(self):
         prov_choice = 0
         provider = prov.Provider()
@@ -96,7 +96,20 @@ class chocan_interface():
     
     #Manager menu this will work with the provider class
     def manager_menu(self):
-        print("This is a test for the manager menu")
+        manager_choice = 0
+
+        while (manager_choice != 8):
+            print("\n********** Manager Menu **********\n")
+            print("1. Add Member"
+                  "\n2. Remove Member"
+                  "\n3. Update Member Record"
+                  "\n4. Add Provider"
+                  "\n5. Remove Provider"
+                  "\n6. Update Provider Record"
+                  "\n7. Generate Report"
+                  "\n8. Quit"
+                )
+
 
 """
     def main(self):
