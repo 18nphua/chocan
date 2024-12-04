@@ -22,30 +22,6 @@ class Provider():
         self.comments = ""
         self.database = db.db_client()
 
-    """
-    def read_provider_id(self) -> bool: 
-        validated = False
-        provider_name = None
-
-        self.provider_id = valid.read_int("Please enter your provider ID number: ")
-
-        while len(str(self.provider_id)) != PROVIDER_ID_LENGTH:
-            print(f"Please enter a 9-digit number.\n")
-            self.provider_id = valid.read_int("Please enter your Provider ID number: ")
-
-        provider_name = self.database.prov_get_name_from_id(self.provider_id)        
-
-        if provider_name is not None:
-            print("Validated.")
-            print(f"\nWelcome {provider_name}")
-            validated = True
-
-        else:
-            print("\nInvalid Number.\n")
-
-        return validated 
-    """
-
     def read_member_id(self):
         validated = False
         member_status = None
@@ -91,9 +67,7 @@ class Provider():
 
         """
         if member_status is "good standing":
-            print("\nValidated")
-
-            
+            print("\nValidated")        
     
         elif member_status is "suspended": 
             print("Unable to generate a bill. The specified Member ID is suspended.")
