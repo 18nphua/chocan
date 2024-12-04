@@ -11,17 +11,14 @@ class db_client():
     def __init__(self):
         # Initalize connection to each db
         path = "database"
-        self.member_db      = sqlite3.connect(f'{path}/members.db')
-        self.provider_db    = sqlite3.connect(f'{path}/providers.db')
-        self.spl_db         = sqlite3.connect(f'{path}/services_provided_log.db')
-        self.services_db    = sqlite3.connect(f'{path}/services.db')
+        self.db = sqlite3.connect(f'{path}/chocan.db')
+        self.cur = self.db.cursor()
+        self.cur.execute("PRAGMA foreign_keys = ON")
 
-        # Initialize a cursor for each db
-        self.mem_cur        = self.member_db.cursor()
-        self.provider_cur   = self.provider_db.cursor()
-        self.spl_cur        = self.spl_db.cursor()
-        self.serv_cur       = self.services_db.cursor()
-    
+        # Ranges
+        self.MEMBER_ID_RANGE    = 10000000
+        self.PROVIDER_ID_RANGE  = 20000000
+
     #################################### MEMBER FUNCTIONALITY ###################################
 
     #this function will be used to add new members to the database,
@@ -37,17 +34,17 @@ class db_client():
 
         #check if there exists a member with the same name, phone number, street adress, etc.
         #to prevent duplications of members in the database.
-        self.mem_cur.execute("""SELECT EXISTS (SELECT 1 FROM members WHERE name = ? 
+        self.cur.execute("""SELECT EXISTS (SELECT 1 FROM members WHERE name = ? 
                                 AND phone_number = ? AND street_address = ? 
                                 AND city = ? AND state = ? AND zip_code = ?)""", 
                                 (name, phone_number, street_address, city, state, zip_code))
         
-        if self.mem_cur.fetchone()[0] == 0:#if person doesn't exist in the database -> add to database
+        if self.cur.fetchone()[0] == 0:#if person doesn't exist in the database -> add to database
             #add the member to the data base
-            result = self.mem_cur.execute(f"""INSERT INTO members (id, name, phone_number, street_address, city, state, zip_code) VALUES 
+            result = self.cur.execute(f"""INSERT INTO members (id, name, phone_number, street_address, city, state, zip_code) VALUES 
                 ( NULL, '{name}', {phone_number}, '{street_address}', '{city}', '{state}', {zip_code});
                 """)
-            self.mem_cur.execute("COMMIT")
+            self.cur.execute("COMMIT")
 
             return True# a new entry was added
         
@@ -56,7 +53,7 @@ class db_client():
     
     
     def print_members(self):
-        result = self.mem_cur.execute("SELECT * FROM members")
+        result = self.cur.execute("SELECT * FROM members")
         print(result.fetchall())
     
 
@@ -68,33 +65,33 @@ class db_client():
         match attribute:
                 # change name
             case "name":
-                self.mem_cur.execute("UPDATE members SET name = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE members SET name = ? WHERE id = ?", (value, target_id))
 
                 # change phone number
             case "phone_number":
-                self.mem_cur.execute("UPDATE members SET phone_number = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE members SET phone_number = ? WHERE id = ?", (value, target_id))
 
                 # change steet address
             case "street_address":
-                self.mem_cur.execute("UPDATE members SET street_address = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE members SET street_address = ? WHERE id = ?", (value, target_id))
 
                 # change city
             case "city":
-                self.mem_cur.execute("UPDATE members SET city = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE members SET city = ? WHERE id = ?", (value, target_id))
 
                 # change state
             case "state":
-                self.mem_cur.execute("UPDATE members SET state = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE members SET state = ? WHERE id = ?", (value, target_id))
 
                 # change zip code
             case "zip_code":
-                self.mem_cur.execute("UPDATE members SET zip_code = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE members SET zip_code = ? WHERE id = ?", (value, target_id))
             case _:
                 print("Unkown attribute")
                 return False#nothing was changed
 
         #this determines wether or not the database actually edited a member or not
-        if self.mem_cur.rowcount == 0:#didn't change
+        if self.cur.rowcount == 0:#didn't change
             return False
         else:
             return True #a member was edited
@@ -112,13 +109,13 @@ class db_client():
                 return False
             
         #delete the member from the database
-        self.mem_cur.execute("DELETE FROM members WHERE id = ?", (member_ID,))
+        self.cur.execute("DELETE FROM members WHERE id = ?", (member_ID,))
             
         #this determines wether or not the database actually removed a member or not
-        if self.mem_cur.rowcount == 0:#didn't change, no members removed
+        if self.cur.rowcount == 0:#didn't change, no members removed
             return False
         else:
-            self.mem_cur.execute("COMMIT")#save the change
+            self.cur.execute("COMMIT")#save the change
             return True#a member was removed
         
     #################################### END  ###################################
@@ -135,17 +132,17 @@ class db_client():
 
          #Similarly to add_member, check if there exists a provider with the same name, phone number, street adress, etc.
         #to prevent duplications of providers in the database.
-        self.provider_cur.execute("""SELECT EXISTS (SELECT 1 FROM providers WHERE name = ? 
+        self.cur.execute("""SELECT EXISTS (SELECT 1 FROM providers WHERE name = ? 
                                 AND phone_number = ? AND street_address = ? 
                                 AND city = ? AND state = ? AND zip_code = ?)""", 
                                 (name, phone_number, street_address, city, state, zip_code))
         
-        if self.provider_cur.fetchone()[0] == 0:#if provider doesn't exist in the database -> add to database
+        if self.cur.fetchone()[0] == 0:#if provider doesn't exist in the database -> add to database
             #add the provider to the data base
-            result = self.provider_cur.execute(f"""INSERT INTO providers (id, name, phone_number, street_address, city, state, zip_code) VALUES 
+            result = self.cur.execute(f"""INSERT INTO providers (id, name, phone_number, street_address, city, state, zip_code) VALUES 
                 ( NULL, '{name}', {phone_number}, '{street_address}', '{city}', '{state}', {zip_code});
                 """)
-            self.provider_cur.execute("COMMIT")
+            self.cur.execute("COMMIT")
 
             return True# a new entry was added
         
@@ -156,27 +153,27 @@ class db_client():
         # match case
         match attribute:
             case "name":
-                self.provider_cur.execute("UPDATE providers SET name = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE providers SET name = ? WHERE id = ?", (value, target_id))
 
                 # change phone number
             case "phone_number":
-                self.provider_cur.execute("UPDATE providers SET phone_number = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE providers SET phone_number = ? WHERE id = ?", (value, target_id))
 
                 # change steet address
             case "street_address":
-                self.provider_cur.execute("UPDATE providers SET street_address = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE providers SET street_address = ? WHERE id = ?", (value, target_id))
 
                 # change city
             case "city":
-                self.provider_cur.execute("UPDATE providers SET city = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE providers SET city = ? WHERE id = ?", (value, target_id))
 
                 # change state
             case "state":
-                self.provider_cur.execute("UPDATE providers SET state = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE providers SET state = ? WHERE id = ?", (value, target_id))
 
                 # change zip code
             case "zip_code":
-                self.provider_cur.execute("UPDATE providers SET zip_code = ? WHERE id = ?", (value, target_id))
+                self.cur.execute("UPDATE providers SET zip_code = ? WHERE id = ?", (value, target_id))
             case _:
                 print("Unkown attribute")
                 return False#nothing was changed
@@ -193,13 +190,13 @@ class db_client():
                 return False
             
         #delete the provider from the database
-        self.provider_cur.execute("DELETE FROM providers WHERE id = ?", (provider_ID,))
+        self.cur.execute("DELETE FROM providers WHERE id = ?", (provider_ID,))
             
         #this determines wether or not the database actually removed a provider or not
-        if self.provider_cur.rowcount == 0:#didn't change, no provider removed
+        if self.cur.rowcount == 0:#didn't change, no provider removed
             return False
         else:
-            self.provider_cur.execute("COMMIT")#save the change
+            self.cur.execute("COMMIT")#save the change
             return True#a provider was removed
         
     #################################### END  ##################################
@@ -207,43 +204,56 @@ class db_client():
 
      ################################### REPORTS AND MISCELLANEOUS ###################################
 
+    # Finds member id given member name
     def mem_get_id_from_name(self, member_name : str):
-        result = self.mem_cur.execute(f'SELECT id FROM members WHERE name="{member_name}"')
-        id_val = 10000 + result.fetchone()[0]
-
-        if id_val:
-            return id_val
+        if not member_name:
+            return None
+        
+        result = self.cur.execute(f'SELECT id FROM members WHERE name="{member_name}"')
+        result = result.fetchone()
+        
+        if result:
+            # the actual id value stored in the database is would like like "42", adding
+            # the self.MEMBER_ID_RANGE is simply for padding the number to 9 digits
+            return self.MEMBER_ID_RANGE + result[0]
         return None
+    
     
     def mem_get_name_from_id(self, member_id_num : int):
-        member_id_num = member_id_num - 10000
-        result = self.mem_cur.execute(f'SELECT name FROM members WHERE id={member_id_num}')
-
-        name_val = result.fetchone()[0]
-
-        if name_val:
-            return name_val
-        return None
-    
-    def prov_get_name_from_id(self, provider_id_num : int):
-        member_id_num = member_id_num - 10000
-        result = self.provider_cur.execute(f'SELECT name FROM providers WHERE id={provider_id_num}')
-        name_val = result.fetchone()[0]
+        if not member_id_num:
+            return None
+        
+        member_id_num = self.clean_id(member_id_num, self.MEMBER_ID_RANGE) - self.MEMBER_ID_RANGE
+        result = self.cur.execute(f'SELECT name FROM members WHERE id={member_id_num}')
+        name_val = result.fetchone()
 
         if name_val:
-            return name_val
+            return name_val[0]
         return None
     
     def prov_get_id_from_name(self, provider_name : str):
-        result = self.provider_cur.execute(f'SELECT id FROM providers WHERE name="{provider_name}"')
-        id_val = 10000 + result.fetchone()[0]
+        result = self.cur.execute(f'SELECT id FROM providers WHERE name="{provider_name}"')
+        result = result.fetchone()
 
-        if id_val:
-            return id_val
+        if result:
+            return self.PROVIDER_ID_RANGE + result[0]
+        return None
+    
+    def prov_get_name_from_id(self, provider_id_num : int):
+        if not provider_id_num or provider_id_num <= 0:
+            return None
+        
+        provider_id_num = self.clean_id(provider_id_num, self.PROVIDER_ID_RANGE)
+        provider_id_num = provider_id_num - self.PROVIDER_ID_RANGE
+        result = self.cur.execute(f'SELECT name FROM providers WHERE id={provider_id_num}')
+        name_val = result.fetchone()[0]
+
+        if name_val:
+            return name_val
         return None
 
     def prov_get_all(self, provider_num : int):
-        result = self.provider_cur.execute(f'SELECT * FROM providers WHERE id="{provider_num}"')
+        result = self.cur.execute(f'SELECT * FROM providers WHERE id="{provider_num}"')
         r = result.fetchone()
 
         if r:
@@ -251,7 +261,7 @@ class db_client():
         return None
     
     def serv_get_code_from_name(self, service_name : str):
-        result = self.serv_cur.execute(f'SELECT service_code FROM services WHERE UPPER(name)=UPPER("{service_name}")')
+        result = self.cur.execute(f'SELECT service_code FROM services WHERE UPPER(name)=UPPER("{service_name}")')
         result = result.fetchone()[0]
         
         if result:
@@ -259,7 +269,7 @@ class db_client():
         return None
     
     def serv_get_name_from_code(self, service_code : int):
-        result = self.serv_cur.execute(f'SELECT name FROM services WHERE service_code={service_code}')
+        result = self.cur.execute(f'SELECT name FROM services WHERE service_code={service_code}')
         result = result.fetchone()[0]
 
         if result:
@@ -267,8 +277,10 @@ class db_client():
         return None
     
     def get_fee_from_service_code(self, service_code):
-        # to implement
-        return 1.00
+        result  = self.cur.execute(f'SELECT fee FROM services WHERE service_code={service_code}')
+        result = result.fetchone()[0]
+
+        return result
     
     def log_service(self, current_date_time : str,
                      date_service_provided : str, 
@@ -276,19 +288,32 @@ class db_client():
                      member_id_num : int, 
                      service_code : int):
         
+        # Sanitize id's
+        if not member_id_num:
+            return False
+        if not provider_id_num:
+            return False
+        
+        member_id_num = self.clean_id(member_id_num, self.MEMBER_ID_RANGE) - self.MEMBER_ID_RANGE
+        provider_id_num = self.clean_id(provider_id_num, self.PROVIDER_ID_RANGE) - self.PROVIDER_ID_RANGE
+
         member_name = self.mem_get_name_from_id(member_id_num)
         fee = self.get_fee_from_service_code(service_code)
 
-        print()
-        result = self.spl_cur.execute(f"""INSERT INTO services_provided_log(date_service_provided, date_service_logged, provider_id, member_id, member_name, service_code, fee) VALUES
-                                      ("{current_date_time}", "{date_service_provided}", {provider_id_num}, {member_id_num}, "{member_name}", {service_code}, {fee} )""")
-        result = self.spl_cur.execute(f'COMMIT')
+        result = self.cur.execute(f"""INSERT INTO services_provided_log(date_service_provided, date_service_logged, provider_id, member_id, member_name, s_code, fee) VALUES
+                                        ("{current_date_time}", "{date_service_provided}", {provider_id_num}, {member_id_num}, "{member_name}", {service_code}, {fee})""")
+        result = self.cur.execute(f'COMMIT')
 
-        return
+        return True
 
     def generate_report(self, report_type, id_num : int):
+        if not id_num:
+            return None
+        
         if report_type == "member_weekly":
-            result = self.spl_cur.execute(f'SELECT * FROM services_provided_log WHERE member_id={id_num}')
+            id_num = self.clean_id(id_num, self.MEMBER_ID_RANGE)
+            id_num = id_num - self.MEMBER_ID_RANGE
+            result = self.cur.execute(f'SELECT * FROM services_provided_log WHERE member_id={id_num}')
             return result.fetchall()
         if report_type == "provider_weekly":
             # To implement
@@ -301,9 +326,9 @@ class db_client():
     #calculates the total fees the member made from all the services
     def calculate_member_fees(self, member_ID) -> float:
         #get all service_logs where the member ID is the same as member_ID
-        service_list = self.spl_cur.execute("""SELECT fee FROM services_provided_log
+        service_list = self.cur.execute("""SELECT fee FROM services_provided_log
                                                 WHERE member_id = ?""", (member_ID,))
-        service_list = self.spl_cur.fetchall()
+        service_list = self.cur.fetchall()
 
         total_fee = float(0)#make a varaible to be used as the return of all the fees combined
         for i in total_fee:#iterate through each service_log
@@ -316,9 +341,9 @@ class db_client():
     #returns the total balance that ChocAn owes them.
     def calculate_provider_balances(self, provider_ID) -> float:
         #get all service_logs where the provider ID is the same as provider_ID
-        service_list = self.spl_cur.execute("""SELECT fee FROM services_provided_log
+        service_list = self.cur.execute("""SELECT fee FROM services_provided_log
                                                 WHERE provider_id = ?""", (provider_ID,))
-        service_list = self.spl_cur.fetchall()
+        service_list = self.cur.fetchall()
 
         total_balance = float(0)#make a varaible to be used as the return of all the fees combined
         for i in total_balance:#iterate through each service_log
@@ -337,4 +362,11 @@ class db_client():
         # to implement
         return
 
+    def clean_id(self, id_num, id_range):
+        if id_num < id_range and id_num > 0:
+            id_num = id_num + id_range
+            return id_num
+        if id_num > id_range and id_num < id_range * 10:
+            return id_num
+        return None
     #################################### END  ###################################

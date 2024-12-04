@@ -3,12 +3,7 @@ from DatabaseApi import db_client
 
 
 client = db_client()
-"""
 
-if client.add_provider("Jordan Dexter", 5419937235, "1234 SE Street St.", "Portland", "Oregon", 97221):
-    print("added successfully")
-else:
-    print("an error has occured")
 
 
 id_num = client.prov_get_id_from_name("Jordan Dexter")
@@ -18,14 +13,6 @@ client.edit_provider(id_num, "street_address", "321 Street St.")
 client.edit_provider(id_num, "state", "Arizona")
 client.edit_provider(id_num, "city", "Pheonix")
 client.edit_provider(id_num, "zip_code", 123123)
-
-print(client.prov_get_all(id_num))   # result = client.prov_get_all(id_num)      return [(),(), ().....] reault[0][0]
-
-
-"""
-
-"""
-client = db_client()
 
 client.add_provider("John Doe 0", 1235431111, "123 Street St", "Portland", "Oregon", 97123)
 client.add_provider("John Doe 1", 1235431111, "123 Street St", "Portland", "Oregon", 97123)
@@ -46,13 +33,15 @@ client.add_member("Jordan Dexter 7", 5419937235, "1234 SE Street St.", "Portland
 client.add_member("Jordan Dexter 8", 5419937235, "1234 SE Street St.", "Portland", "Oregon", 97221)
 client.add_member("Jordan Dexter 9", 5419937235, "1234 SE Street St.", "Portland", "Oregon", 97221)
 
+
 prov_id_num = client.prov_get_id_from_name("John Doe 5")
 mem_id_num = client.mem_get_id_from_name("Jordan Dexter 7")
 
-client.log_service("2024/03/01 10:21:00", "2024/03/01 10:25:00", prov_id_num, mem_id_num, 874526)
+
+if client.log_service("2024/03/01 10:21:00", "2024/03/01 10:25:00", prov_id_num, mem_id_num, 874526):
+    print("logged")
+else:
+    print("an error occured")
+
 result = client.generate_report("member_weekly", mem_id_num)
-
 print(result)
-"""
-
-print(client.serv_get_name_from_code(230984))
