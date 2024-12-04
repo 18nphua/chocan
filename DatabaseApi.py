@@ -283,4 +283,8 @@ class db_client():
         #to implemnt
         return
 
+    def member_status(self, target_ID):
+        #to implement
+        return True
+        
     #################################### END  ###################################
