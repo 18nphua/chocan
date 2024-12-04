@@ -253,14 +253,18 @@ class db_client():
     def serv_get_code_from_name(self, service_name : str):
         result = self.serv_cur.execute(f'SELECT service_code FROM services WHERE UPPER(name)=UPPER("{service_name}")')
         result = result.fetchone()[0]
-
-        return result
+        
+        if result:
+            return result
+        return None
     
     def serv_get_name_from_code(self, service_code : int):
         result = self.serv_cur.execute(f'SELECT name FROM services WHERE service_code={service_code}')
         result = result.fetchone()[0]
 
-        return result
+        if result:
+            return result
+        return None
     
     def get_fee_from_service_code(self, service_code):
         # to implement
