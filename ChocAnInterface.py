@@ -29,7 +29,7 @@ class chocan_interface():
             term_choice = v.read_int("Please choose which terminal to use: ")
             
             if (term_choice == 1):
-                if(self.provider.read_provider_num() == True):
+                if(self.provider.read_provider_id() == True):
                     self.provider_menu()
             elif (term_choice == 2):
                 self.manager_menu()

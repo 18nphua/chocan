@@ -9,32 +9,64 @@ import valid as v
 import DatabaseApi as db
 
 PROVIDER_ID_LENGTH = 9
+MEMBER_ID_LENGTH = 9
 
 class Provider():
     def __init__(self) -> None:
         self.provider_id = 0
-        self.provider_name = None
+        self.member_id = 0
         self.database = db.db_client()
 
     def read_provider_num(self) -> bool: 
         validated = False
-        self.provider_id = v.read_int("Please enter your provider number: ")
+        provider_name = None
+
+        self.provider_id = v.read_int("Please enter your provider ID number: ")
 
         while len(str(self.provider_id)) != PROVIDER_ID_LENGTH:
             print(f"Please enter a 9-digit number.\n")
-            self.provider_id = v.read_int("Please enter your provider number: ")
+            self.provider_id = v.read_int("Please enter your provider ID number: ")
 
-        self.provider_name = self.database.prov_get_name_from_id(self.provider_id)        
+        provider_name = self.database.prov_get_name_from_id(self.provider_id)        
 
-        if self.provider_name is not None:
+        if provider_name is not None:
             print("Validated.")
-            print(f"\nWelcome {self.provider_name}")
+            print(f"\nWelcome {provider_name}")
             validated = True
 
         else:
-            print("\nInvalid provider number entered.\n")
+            print("\nInvalid Number.\n")
 
         return validated
+
+    def read_member_num(self):
+        validated = False
+        member_status = None
+
+        self.member_id = v.read_int("Enter the member's ID number: ")
+
+        while len(str(self.provider_id)) != PROVIDER_ID_LENGTH:
+            print(f"Please enter a 9-digit number.\n")
+            self.provider_id = v.read_int("Enter the member's ID number: ")
+
+        #member_status = self.database.mem_get_status(self.member_id)        
+
+        """
+        if member_status is "validated":
+            print("\nValidated")
+            validated = True
+    
+        elif member_status is "suspended":
+            print("\nMember suspended\n")
+
+        else:
+            print("\nInvalid Number.\n")
+
+        """
+        return validated
+
+    def find_service_code(self):
+        pass
 
     def generate_bill(self) -> None:
         pass
