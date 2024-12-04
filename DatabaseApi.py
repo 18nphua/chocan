@@ -65,27 +65,27 @@ class db_client():
         match attribute:
                 # change name
             case "name":
-                self.mem_cur.execute("UPDATE members SET name = ? WHERE id_num = ?", (value, target_id))
+                self.mem_cur.execute("UPDATE members SET name = ? WHERE id = ?", (value, target_id))
 
                 # change phone number
             case "phone_number":
-                self.mem_cur.execute("UPDATE members SET phone_number = ? WHERE id_num = ?", (value, target_id))
+                self.mem_cur.execute("UPDATE members SET phone_number = ? WHERE id = ?", (value, target_id))
 
                 # change steet address
             case "street_address":
-                self.mem_cur.execute("UPDATE members SET street_address = ? WHERE id_num = ?", (value, target_id))
+                self.mem_cur.execute("UPDATE members SET street_address = ? WHERE id = ?", (value, target_id))
 
                 # change city
             case "city":
-                self.mem_cur.execute("UPDATE members SET city = ? WHERE id_num = ?", (value, target_id))
+                self.mem_cur.execute("UPDATE members SET city = ? WHERE id = ?", (value, target_id))
 
                 # change state
             case "state":
-                self.mem_cur.execute("UPDATE members SET state = ? WHERE id_num = ?", (value, target_id))
+                self.mem_cur.execute("UPDATE members SET state = ? WHERE id = ?", (value, target_id))
 
                 # change zip code
             case "zip_code":
-                self.mem_cur.execute("UPDATE members SET zip_code = ? WHERE id_num = ?", (value, target_id))
+                self.mem_cur.execute("UPDATE members SET zip_code = ? WHERE id = ?", (value, target_id))
             case _:
                 print("Unkown attribute")
                 return False#nothing was changed
@@ -273,14 +273,43 @@ class db_client():
             return None
         return
 
+    #calculates the total fees the member made from all the services
+    def calculate_member_fees(self, member_ID) -> float:
+        #get all service_logs where the member ID is the same as member_ID
+        service_list = self.spl_cur.execute("""SELECT fee FROM services_provided_log
+                                                WHERE member_id = ?""", (member_ID,))
+        service_list = self.spl_cur.fetchall()
 
-    def calculate_member_fees(self) -> float:
-        # to implemtn
-        return
+        total_fee = float(0)#make a varaible to be used as the return of all the fees combined
+        for i in total_fee:#iterate through each service_log
+            total_fee += service_list[0]
+
+        return total_fee
 
 
-    def calculate_provider_balances(self) -> float:
-        #to implemnt
+    #calculate the total balance for the provider from all the services they provided
+    #returns the total balance that ChocAn owes them.
+    def calculate_provider_balances(self, provider_ID) -> float:
+        #get all service_logs where the provider ID is the same as provider_ID
+        service_list = self.spl_cur.execute("""SELECT fee FROM services_provided_log
+                                                WHERE provider_id = ?""", (provider_ID,))
+        service_list = self.spl_cur.fetchall()
+
+        total_balance = float(0)#make a varaible to be used as the return of all the fees combined
+        for i in total_balance:#iterate through each service_log
+            total_balance += service_list[0]
+
+        return total_balance
+
+
+    #gets the status of whether or not the member's account is active.
+    def member_status(self, target_ID) -> bool:
+        #to implement
+        return True
+
+    #changes the members balance by addition or subtraction.
+    def deposit_member_balance(self, target_ID, amount: float):
+        # to implement
         return
 
     #################################### END  ###################################
