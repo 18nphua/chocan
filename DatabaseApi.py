@@ -303,7 +303,7 @@ class db_client():
 
 
     #gets the status of whether or not the member's account is active.
-    def member_status(self, target_ID) -> bool:
+    def get_member_status(self, target_ID) -> bool:
         #to implement
         return True
 
