@@ -277,6 +277,9 @@ class db_client():
     def calculate_member_fees(self, member_ID) -> float:
         # to implemtn
         return
+        service_list = self.spl_cur.execute("""SELECT fee FROM services_provided_log
+                                                WHERE member_id = ?""", (member_ID,))
+        service_list = self.spl_cur.fetchall()
 
 
     def calculate_provider_balances(self) -> float:
