@@ -14,9 +14,6 @@ SERVICE_CODE_LENGTH = 5
 COMMENT_MAX_LENGTH = 100
 
 class chocan_service_cord():
-    def __init__():
-        pass
-
     #Manager functions
     def add_member():
 
@@ -52,7 +49,6 @@ class chocan_service_cord():
         #member_status = database.get_member_status(member_id)        
 
         #Displays the results of the database query.
-        """
         if member_status is "good standing":
             print("\nValidated")
             member_is_valid = True
@@ -63,7 +59,6 @@ class chocan_service_cord():
         else:
             print("\nInvalid Number\n")
 
-        """
         return member_is_valid
 
     def find_service_code(self) -> int:
