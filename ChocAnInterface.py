@@ -36,6 +36,7 @@ class chocan_interface():
 
             elif (terminal_choice < 1 or terminal_choice > 3):
                 print("Invalid choice selected\n")
+            
         
     def read_provider_id(self) -> bool: 
         validated = False
@@ -71,8 +72,10 @@ class chocan_interface():
                   "\n2. Look Up Service Code"
                   "\n3. Generate Bill"
                   "\n4. Log Service"
-                  "\n5. Quit"
+                  "\n5. Quit\n"
                 )
+
+            prov_choice = valid.read_int("Please choose an option: ")
 
             if (prov_choice == 1):
                 self.user_cord.read_member_id()

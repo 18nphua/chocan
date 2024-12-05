@@ -262,6 +262,7 @@ class chocan_service_cord():
 
     #Provider functions
     def read_member_id(self) -> bool:
+        database = db.db_client()
         member_is_valid = False
         member_status = None
         member_id = 0
@@ -277,17 +278,18 @@ class chocan_service_cord():
         #Obtains the status of the member associated with the 
         #specified member ID number.
         member_status = database.mem_get_status_from_id(member_id)        
+        member_status = database.mem_get_status_from_id(member_id)        
 
         #Displays the results of the database query.
         if member_status == "VALIDATED":
-            print("\nValidated")
+            print("\nValidated.")
             member_is_valid = True
     
         elif member_status == "SUSPENDED":
             print("\nMember suspended\n")
 
         else:
-            print("\nInvalid Number\n")
+            print("\nMember not found\n")
 
         return member_is_valid
 
@@ -296,17 +298,25 @@ class chocan_service_cord():
         service_code = 0
         database = db.db_client()
     
-        service_name = valid.read_string("Enter the provider role (e.g., dietitian, therapist): ")
+        service_name = valid.read_string("Enter the Service name (or type all, 0 to exit): ")
 
         #Obtains the service corresponding to the specified service type.
+        
+        if service_name.upper() == 'ALL':
+            result = database.serv_get_all_services()
+
+            for service in result:
+                print(f"Service Name: {service[1]}")
+                print(f"\tService Code: {database.serv_get_code_from_name(service[1])}")
+            return None
+        
         service_code = database.serv_get_code_from_name(service_name)
 
         #Displays the results of the database query.
         if service_code == 0:
-            print("Invalid service type")
-            
+            print("Invalid service")
         else:
-            print(f"Service Type: {service_name}    Service Code: {service_code}\n")
+            print(f"Service Name: {service_name}    Service Code: {service_code}\n")
  
         return service_code
 
@@ -330,57 +340,9 @@ class chocan_service_cord():
             print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
             member_id = valid.read_int("Enter the Member ID number: ")
  
-        member_status = database.mem_get_status_from_id(member_id)        
-
-        if member_status == "VALIDATED":
-            print("\nValidated")        
- 
-            while date_is_valid == False:
-                service_date = valid.read_string("\nEnter a date (MM-DD-YYYY): ")
-                try:
-                    datetime.datetime.strptime(service_date, "%m-%d-%Y")
-                    date_is_valid = True
-
-                except ValueError:
-                    print("Invalid date format. Please use MM-DD-YYYY")
-
-            #Repeatedly prompts the provider to enter the type of the service that was provided
-            #until they indicate the information returned is correct     
-            while service_is_correct == 'n':
-
-                service_code = self.find_service_code()
-
-                while service_code == 0: 
-                    service_code = self.find_service_code()
-
-                service_is_correct = valid.read_y_or_n("Is the above information correct? Please enter 'n' or 'y': ") 
-
-            #Repeatedly prompts the provider to write a comment until they either indicate they are done or no 
-            #longer wish to provide a comment with the bill.
-            while comment_is_approved == 'n' and valid.read_y_or_n("Would you like write a comment? Please enter 'n' or 'y': ") == 'y':
-                comments = valid.read_string("Please enter your comments below\n")
-
-                #Ensures the comment is 100 characters or fewer.
-                while len(str(comments)) != COMMENT_MAX_LENGTH:
-                    print(f"Please keep your comments at 100 characters or fewer (including whitespaces).\n")
-                    comments = valid.read_string("Please enter your comment below\n")
-
-                #Displays what was written.
-                print(f"\"{comments}\"")
-                comment_is_approved = valid.read_y_or_n("\nDoes the comment you wrote look correct? Please enter 'n' or 'y': ")
-
-            #Writes information to disk.
-            #Obtains the current time.
-            formatted_date = now.strftime("%m-%d-%Y %H:%M:%S")
-
-            print("Bill sent.")
-
-        elif member_status == "SUSPENDED": 
-            print("Unable to generate a bill. The specified Member ID is suspended.")
-
-        else: 
-            print("Member ID not specified. Please enter a valid Member ID to generate a bill.")
         
+ 
+            
         return
     
     def generate_member_report():
