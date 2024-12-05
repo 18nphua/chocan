@@ -154,21 +154,6 @@ class chocan_service_cord():
             print(f"Please enter a 9-digit number.\n")
             provider_id = valid.read_int("Enter the Provider ID number: ")
 
-        #Obtains the status of the member associated with the 
-        #specified member ID number.
-        #member_status = database.get_member_status(member_id)        
-
-        #Displays the results of the database query.
-        if provider_status == "good standing":
-            print("\nValidated")
-            provider_is_valid = True
-    
-        elif provider_status == "suspended":
-            print("\nProvider suspended\n")
-
-        else:
-            print("\nInvalid Number\n")
-
         if_removed = user_prov.remove_provider(provider_id)
 
         if(if_removed):
