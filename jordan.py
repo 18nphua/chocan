@@ -33,13 +33,12 @@ client.add_member("Jordan Dexter 7", 5419937235, "1234 SE Street St.", "Portland
 client.add_member("Jordan Dexter 8", 5419937235, "1234 SE Street St.", "Portland", "Oregon", 97221)
 client.add_member("Jordan Dexter 9", 5419937235, "1234 SE Street St.", "Portland", "Oregon", 97221)
 
-
 prov_id_num = client.prov_get_id_from_name("John Doe 5")
 mem_id_num = client.mem_get_id_from_name("Jordan Dexter 7")
 
-
-if client.log_service("2024/12/03 10:21:00", "2024/03/01 10:25:00", prov_id_num, mem_id_num, 874526):
-    print("logged")
+if client.log_service("2024/12/03 10:21:00", "2024/11/30 10:25:00", prov_id_num, mem_id_num, 874526):
+    #print("logged")
+    pass
 else:
     print("an error occured")
 

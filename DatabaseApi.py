@@ -17,8 +17,8 @@ class db_client():
         self.cur.execute("PRAGMA foreign_keys = ON")
 
         # Ranges
-        self.MEMBER_ID_RANGE    = 10000000
-        self.PROVIDER_ID_RANGE  = 20000000
+        self.MEMBER_ID_RANGE    = 100000000
+        self.PROVIDER_ID_RANGE  = 200000000
 
     #################################### MEMBER FUNCTIONALITY ###################################
 
@@ -301,7 +301,7 @@ class db_client():
         member_name = self.mem_get_name_from_id(member_id_num)
         fee = self.get_fee_from_service_code(service_code)
 
-        result = self.cur.execute(f"""INSERT INTO services_provided_log(date_service_provided, date_service_logged, provider_id, member_id, member_name, s_code, fee) VALUES
+        result = self.cur.execute(f"""INSERT INTO services_provided_log(date_service_logged, date_service_provided, provider_id, member_id, member_name, s_code, fee) VALUES
                                         ("{current_date_time}", "{date_service_provided}", {provider_id_num}, {member_id_num}, "{member_name}", {service_code}, {fee})""")
         result = self.cur.execute(f'COMMIT')
 
@@ -318,11 +318,13 @@ class db_client():
             current_date = datetime.datetime.now()
             a_week_ago = current_date - datetime.timedelta(days=7)
 
-            print(current_date)
-            print(a_week_ago)
+            current_date = current_date.strftime("%Y/%m/%d %H:%M:%S")
+            a_week_ago = a_week_ago.strftime("%Y/%m/%d %H:%M:%S")
+
             result = self.cur.execute(f'SELECT * FROM services_provided_log WHERE member_id={id_num} AND date_service_provided<"{current_date}" AND date_service_provided>"{a_week_ago}"')
 
             return result.fetchall()
+        
         if report_type == "provider_weekly":
             # To implement
             return None
