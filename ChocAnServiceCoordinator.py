@@ -345,7 +345,7 @@ class chocan_service_cord():
                         file.write()
 
     
-    def generate_member_report():
+    def generate_member_report(self):
         pass 
 
     def log_service(self) -> None:
