@@ -1,7 +1,5 @@
 from ChocAnInterface import *
 
-import datetime 
-import valid 
 def main():
     menu = chocan_interface()
 

@@ -261,7 +261,7 @@ class chocan_service_cord():
     
         return was_edited
 
-    def generate_weekly_report():
+    def generate_weekly_report(self):
         pass
 
     #Provider functions
