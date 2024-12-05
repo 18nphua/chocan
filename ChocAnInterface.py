@@ -78,7 +78,7 @@ class chocan_interface():
             prov_choice = valid.read_int("Please choose an option: ")
 
             if (prov_choice == 1):
-                self.user_cord.read_member_id()
+                self.user_cord.read_member_id() #done
 
             elif (prov_choice == 2):
                 self.user_cord.find_service_code()

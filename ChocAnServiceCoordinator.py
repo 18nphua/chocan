@@ -274,7 +274,7 @@ class chocan_service_cord():
         while len(str(member_id)) != MEMBER_ID_LENGTH:
             print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
             member_id = valid.read_int("Enter the Member ID number: ")
-
+        
         #Obtains the status of the member associated with the 
         #specified member ID number.
         member_status = database.mem_get_status_from_id(member_id)      
@@ -320,26 +320,30 @@ class chocan_service_cord():
         return service_code
 
     def generate_bill(self) -> None:
-        member_id = 0
-        service_date = " "
-        service_code = 0
-        comments = " "
-
-        member_status = None
-        date_is_valid = False
-        service_is_correct = 'n'
-        comment_is_approved = 'n'
-        now = datetime.datetime.now()
-        formatted_date = " "
-
+        path = "reports/"
         database =  db.db_client()
         member_id = valid.read_int("Enter Member ID number: ")
-
+        timecode = datetime.datetime.now().strftime("%m-%d-%Y")
         while len(str(member_id)) != MEMBER_ID_LENGTH:
             print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
             member_id = valid.read_int("Enter the Member ID number: ")
- 
-        return
+
+        member = database.mem_get_name_from_id(member_id)
+        if not member:
+            print("Member not found. Aborting.")
+            return
+        
+        result = database.generate_report('member_weekly', member_id)
+        if result:
+            with open(f'{path}{member_id}_{timecode}', 'w') as file:
+                count = 1
+                file.write(f'Name: {member}\t\tGenerated on: {timecode}')
+                file.write('======================================================')
+                for service in result:
+                    file.write(f'{count}')
+                    for val in service:
+                        file.write()
+
     
     def generate_member_report():
         pass 
