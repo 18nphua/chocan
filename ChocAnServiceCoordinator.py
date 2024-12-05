@@ -1,7 +1,7 @@
 '''
 File: ChocAnServiceCoordinator.py
 Name: Huan Nguyen
-Desc: WIP
+Desc: This file contains the chocan_service_cord() class, which will manage a
 '''
 
 import valid 
@@ -279,11 +279,11 @@ class chocan_service_cord():
         member_status = database.mem_get_status_from_id(member_id)        
 
         #Displays the results of the database query.
-        if member_status == "good standing":
+        if member_status == "VALIDATED":
             print("\nValidated")
             member_is_valid = True
     
-        elif member_status == "suspended":
+        elif member_status == "SUSPENDED":
             print("\nMember suspended\n")
 
         else:
@@ -332,7 +332,7 @@ class chocan_service_cord():
  
         member_status = database.mem_get_status_from_id(member_id)        
 
-        if member_status == "good standing":
+        if member_status == "VALIDATED":
             print("\nValidated")        
  
             while date_is_valid == False:
@@ -375,7 +375,7 @@ class chocan_service_cord():
 
             print("Bill sent.")
 
-        elif member_status == "suspended": 
+        elif member_status == "SUSPENDED": 
             print("Unable to generate a bill. The specified Member ID is suspended.")
 
         else: 
@@ -388,13 +388,3 @@ class chocan_service_cord():
 
     def log_service(self) -> None:
         pass
-""""
-test = chocan_service_cord()
-database = db.db_client()
-
-prov_id = database.prov_get_name_from_id(20000002)
-
-print(prov_id)
-# test.add_provider()
-test.edit_provider()
-"""
