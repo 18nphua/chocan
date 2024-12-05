@@ -96,6 +96,7 @@ class db_client():
         if self.cur.rowcount == 0:#didn't change
             return False
         else:
+            self.cur.execute("COMMIT")#save changes
             return True #a member was edited
     
 
@@ -159,6 +160,7 @@ class db_client():
 
                 # change phone number
             case "phone_number":
+                value = int(value)
                 self.cur.execute("UPDATE providers SET phone_number = ? WHERE id = ?", (value, target_id))
 
                 # change steet address
@@ -175,10 +177,19 @@ class db_client():
 
                 # change zip code
             case "zip_code":
+                value = int(value)
                 self.cur.execute("UPDATE providers SET zip_code = ? WHERE id = ?", (value, target_id))
             case _:
                 print("Unkown attribute")
                 return False#nothing was changed
+
+        #this determines wether or not the database actually edited a member or not
+        if self.cur.rowcount == 0:#didn't change
+            return False
+        else:
+            self.cur.execute("COMMIT")#save changes
+            return True #a member was edited
+
     
     #the function will remove the provider that has the same id as provider_ID, will return true if removed
     # or false if nothing was removed. One small problem with this function is that it will remove all
