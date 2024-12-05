@@ -11,18 +11,12 @@ import datetime
 PHONE_NUM_LENGTH = 10
 MEMBER_ID_LENGTH = 9
 PROVIDER_ID_LENGTH = 9
-SERVICE_CODE_LENGTH = 5
+SERVICE_CODE_LENGTH = 6
 COMMENT_MAX_LENGTH = 100
 ZIP_CODE_LENGTH = 5
 class chocan_service_cord():
     #Manager functions
     def add_member(self) -> None:
-        name = " "
-        phone_num = 0
-        street_address = " "
-        city = " "
-        state = " "
-        zip_code = 0
         database = db.db_client()
         was_added = False
 
@@ -30,7 +24,7 @@ class chocan_service_cord():
         phone_num = valid.read_int("Enter the member's phone number: ")
 
         while len(str(phone_num)) != 10:
-            print("Please enter a 10 digit phone number")
+            print(f"Please enter a {PHONE_NUM_LENGTH}-digit phone number")
             phone_num = valid.read_int("Enter the member's phone number: ")
 
         street_address = valid.read_string("Enter the member's street address: ")
@@ -40,8 +34,12 @@ class chocan_service_cord():
         zip_code = valid.read_int("Enter the member's zip code: ")
 
         while len(str(zip_code)) != ZIP_CODE_LENGTH:
-            print("Please enter a 5 digit zip code") 
+            print(f"Please enter a {ZIP_CODE_LENGTH}-digit zip code") 
             zip_code = valid.read_int("Enter the member's zip code: ")
+
+        if not all([name, phone_num, street_address, city, state, zip_code]):
+            print("Error: All fields must be filled out.")
+            return False
 
         if database.add_member(name, phone_num, street_address, city, state, zip_code) == True:
             print("Member was successfully added.")
@@ -54,12 +52,12 @@ class chocan_service_cord():
     def edit_member(self):
         database = db.db_client()  
         
-        member_id = valid.read_int("Enter Member ID number: ")
+        member_id = valid.read_int("Enter Member ID number to edit: ")
 
         #Verifies the member ID entered is 9-digits long.
         while len(str(member_id)) != MEMBER_ID_LENGTH:
-            print(f"Please enter a 9-digit number.\n")
-            member_id = valid.read_int("Enter the Member ID number: ")
+            print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
+            member_id = valid.read_int("Enter target ID number to edit: ")
 
         print("Member attributes: name, phone_number, street_address, city, state, zip_code")
 
@@ -73,7 +71,7 @@ class chocan_service_cord():
                 value = valid.read_int("Enter a new phone number: ")
 
                 while len(str(value)) != 10:
-                    print("Please enter a 10 digit phone number")
+                    print(f"Please enter a {PHONE_NUM_LENGTH}-digit phone number")
                     value = valid.read_int("Enter a new phone number: ")
 
             case "street_address":
@@ -89,7 +87,7 @@ class chocan_service_cord():
                 value = valid.read_int(f"Enter a new zip code ({ZIP_CODE_LENGTH} digits): ")
 
                 while len(str(zip_code)) != ZIP_CODE_LENGTH:
-                    print("Please enter a 5 digit zip code") 
+                    print(f"Please enter a {ZIP_CODE_LENGTH}-digit zip code") 
                     zip_code = valid.read_int("Enter the member's zip code: ")
 
             case _:
@@ -104,46 +102,66 @@ class chocan_service_cord():
 
         return
         
-    def remove_member(self):
+    def remove_member(self) -> bool:
         database = db.db_client()
+        was_removed = False
 
         member_id = valid.read_int("Enter Member ID number: ")
 
         #Verifies the member ID entered is 9-digits long.
         while len(str(member_id)) != MEMBER_ID_LENGTH:
-            print(f"Please enter a 9-digit number.\n")
+            print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
             member_id = valid.read_int("Enter the Member ID number: ")
 
         if database.remove_member(member_id) == True: 
             print("Member was successfully removed.")
+            was_removed = True
 
         else:
             print("Member could not be found.")
  
-        return
+        return was_removed
 
     def add_provider(self):
-        try:
-            user_prov = db.db_client()
-            name = input("Enter your Name: ")
-            user_phone = input("Enter your phone: ")
-            user_str = input("Enter your street: ")
-            user_city = input("Enter your City: ")
-            user_state = input("Enter your state: ")
-            user_zip = input("Enter your zip: ")
+        database = db.db_client()
+        was_added = False
 
-            if not all([name, user_phone, user_str, user_city, user_state, user_zip]):
+        try:
+            name = valid.read_string("Enter the name of provider: ")
+            phone_num = valid.read_int("Enter the provider's phone number: ")
+
+            while len(str(phone_num)) != 10:
+                print(f"Please enter a {PHONE_NUM_LENGTH}-digit phone number")
+                phone_num = valid.read_int("Enter the member's phone number: ")
+
+            street_address = valid.read_string("Enter the provider's street address: ")
+            city = valid.read_string("Enter the provider's home city: ")
+            state = valid.read_string("Enter the provider's home state: ")
+
+            zip_code = valid.read_int("Enter the provider's zip code: ")
+
+            while len(str(zip_code)) != ZIP_CODE_LENGTH:
+                print(f"Please enter a {ZIP_CODE_LENGTH}-digit zip code") 
+                zip_code = valid.read_int("Enter the provider's zip code: ")
+
+            if database.add_member(name, phone_num, street_address, city, state, zip_code) == True:
+                print("Member was successfully added.")
+
+            else:
+                print("That member is already in the database.")
+
+            if not all([name, phone_num, street_address, city, state, zip_code]):
                 print("Error: All fields must be filled out.")
                 return False
 
-            if_added = user_prov.add_provider(name, user_phone, user_str, user_city, user_state, user_zip)
+            was_added = database.add_provider(name, phone_num, street_address, city, state, zip_code)
 
-            if if_added:
-                print("Provider has been added!\n")
+            if was_added:
+                print("Provider was successfully added.\n")
             else:
-                print("No new provider was added.\n")
+                print("That provider is already in the database..\n")
 
-            return if_added
+            return was_added
 
         except Exception as e:
             print(f"An error occurred while adding the provider: {e}")
@@ -151,18 +169,20 @@ class chocan_service_cord():
 
 
     def remove_provider(self):
+        database = db.db_client()
+        was_removed = False
+
         try:
-            user_prov = db.db_client()
             provider_id = valid.read_int("Enter Provider ID number: ")
 
             # Verifies the provider ID entered is 9-digits long.
-            while len(str(provider_id)) != MEMBER_ID_LENGTH:
-                print("Please enter a 9-digit number.\n")
-                provider_id = valid.read_int("Enter the Provider ID number: ")
+            while len(str(provider_id)) != PROVIDER_ID_LENGTH:
+                print(f"Please enter a {PROVIDER_ID_LENGTH}-digit number.\n")
+                provider_id = valid.read_int("Enter Provider ID number: ")
 
-            if_removed = user_prov.remove_provider(provider_id)
+            was_removed = database.remove_provider(provider_id)
 
-            if if_removed:
+            if was_removed:
                 print("Provider has been removed!\n")
             else:
                 print("Provider has not been removed!\n")
@@ -174,42 +194,68 @@ class chocan_service_cord():
 
 
     def edit_provider(self):
+        database = db.db_client()
+        was_edited = False
+
         try:
-            user_prov = db.db_client()
-            provider_id = valid.read_int("Enter Target ID number to edit: ")
+            provider_id = valid.read_int("Enter Provider ID number to edit: ")
 
             # Verifies the provider ID entered is 9-digits long.
-            while len(str(provider_id)) != MEMBER_ID_LENGTH:
-                print("Please enter a 9-digit number.\n")
+            while len(str(provider_id)) != PROVIDER_ID_LENGTH:
+                print(f"Please enter a {PROVIDER_ID_LENGTH}-digit number.\n")
                 provider_id = valid.read_int("Enter the Provider ID number: ")
 
-            attribute = valid.read_string("Enter attribute: ")
-            value = input("Enter the value: ")
+            print("Provider attributes: name, phone_number, street_address, city, state, zip_code")
 
-            if not attribute:
-                print("Error: Attribute cannot be empty.")
-                return False
+            attribute = valid.read_string("Enter the name of the attribute you would like to edit: ")
 
-            if not value:
-                print("Error: Value cannot be empty.")
-                return False
+            match attribute:
+                case "name":
+                    value = valid.read_string("Enter a new name: ")
 
-            if_added = user_prov.edit_provider(provider_id, attribute, value)
+                case "phone_number":
+                    value = valid.read_int("Enter a new phone number: ")
 
-            if if_added:
-                print("Provider has been edited!\n")
+                    while len(str(value)) != 10:
+                        print(f"Please enter a {PHONE_NUM_LENGTH}-digit phone number")
+                        value = valid.read_int("Enter a new phone number: ")
+
+                case "street_address":
+                    value = valid.read_string("Enter a new street address: ")
+
+                case "city":
+                    value = valid.read_string("Enter a city name (ex: Portland): ")
+
+                case "state":
+                    value = valid.read_string("Enter a state name (ex: Oregon): ")
+
+                case "zip_code":
+                    value = valid.read_int(f"Enter a new zip code ({ZIP_CODE_LENGTH} digits): ")
+
+                    while len(str(zip_code)) != ZIP_CODE_LENGTH:
+                        print(f"Please enter a {ZIP_CODE_LENGTH}-digit zip code") 
+                        zip_code = valid.read_int("Enter the member's zip code: ")
+
+                case _:
+                    print("\nUnknown attribute")
+                    return
+            
+            if database.edit_member(provider_id, value) == True:
+                print(f"{attribute} has been updated for provider with id {provider_id}.")
+                was_edited = True
+
             else:
-                print("Provider has not been edited.\n")
-
-            return if_added
+                print("No edits were made.")
 
         except ValueError as ve:
             print(f"Invalid input: {ve}")
             return False
+
         except Exception as e:
             print(f"An error occurred while editing the provider: {e}")
             return False
-
+    
+        return was_edited
 
     def generate_weekly_report():
         pass
@@ -224,12 +270,12 @@ class chocan_service_cord():
 
         #Verifies the member ID entered is 9-digits long.
         while len(str(member_id)) != MEMBER_ID_LENGTH:
-            print(f"Please enter a 9-digit number.\n")
+            print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
             member_id = valid.read_int("Enter the Member ID number: ")
 
         #Obtains the status of the member associated with the 
         #specified member ID number.
-        #member_status = database.get_member_status(member_id)        
+        member_status = database.get_member_status(member_id)        
 
         #Displays the results of the database query.
         if member_status == "good standing":
@@ -280,7 +326,7 @@ class chocan_service_cord():
         member_id = valid.read_int("Enter Member ID number: ")
 
         while len(str(member_id)) != MEMBER_ID_LENGTH:
-            print(f"Please enter a 9-digit number.\n")
+            print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
             member_id = valid.read_int("Enter the Member ID number: ")
  
         member_status = database.get_member_status(member_id)        
@@ -343,9 +389,9 @@ class chocan_service_cord():
         pass
 
 test = chocan_service_cord()
-user_prov = db.db_client()
+database = db.db_client()
 
-prov_id = user_prov.prov_get_name_from_id(20000002)
+prov_id = database.prov_get_name_from_id(20000002)
 
 print(prov_id)
 # test.add_provider()
