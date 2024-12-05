@@ -111,18 +111,18 @@ class chocan_interface():
                 )
             manager_choice = valid.read_int("Please choose an option: ")
             if(manager_choice == 1):
-                pass
+                self.user_cord.add_member()
             elif (manager_choice == 2):
-                pass
+                self.user_cord.remove_member()
             elif (manager_choice == 3):
-                pass
+                self.user_cord.edit_member()
             elif (manager_choice == 4):
-                pass
+                self.user_cord.add_provider()
             elif (manager_choice == 5):
-                pass
+                self.user_cord.remove_provider()
             elif (manager_choice == 6):
-                pass
+                self.user_cord.edit_provider()
             elif (manager_choice == 7):
-                pass
+                self.user_cord.generate_weekly_report()
             elif (manager_choice < 1 or manager_choice > 8):
                 print("\nInvalid Option.")
