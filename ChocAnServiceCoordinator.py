@@ -69,11 +69,59 @@ class chocan_service_cord():
  
         return
 
-    def add_provider():
-        pass
+    def add_provider(self):
+        user_prov = db.db_client()
+        name = (input("Enter your Name: "))
+        user_phone = (input("Enter your phone: "))
+        user_str = (input("Enter your street: "))
+        user_city = (input("Enter your City: "))
+        user_state = (input("Enter your state: "))
+        user_zip= (input("Enter your zip: "))
 
-    def remove_provider():
-        pass
+        if_added =user_prov.add_provider(name,user_phone,user_str,user_city,user_state,user_zip)
+
+        if(if_added == True):
+            print("Provider has been added!\n")
+        else:
+            print("No new provider was added\n")
+
+        return if_added
+
+
+    def remove_provider(self):
+        provider_is_valid = False
+        provider_status = None
+        provider_id = 0
+        user_prov = db.db_client()
+
+        provider_id = valid.read_int("Enter Provider ID number: ")
+
+        #Verifies the member ID entered is 9-digits long.
+        while len(str(provider_id)) != MEMBER_ID_LENGTH:
+            print(f"Please enter a 9-digit number.\n")
+            provider_id = valid.read_int("Enter the Provider ID number: ")
+
+        #Obtains the status of the member associated with the 
+        #specified member ID number.
+        #member_status = database.get_member_status(member_id)        
+
+        #Displays the results of the database query.
+        if provider_status == "good standing":
+            print("\nValidated")
+            provider_is_valid = True
+    
+        elif provider_status == "suspended":
+            print("\nProvider suspended\n")
+
+        else:
+            print("\nInvalid Number\n")
+
+        if_removed = user_prov.remove_provider(provider_id)
+
+        if(if_removed):
+            print("Provider has been removed!\n")
+        else:
+            print("Provider has not been removed!\n")
 
     def generate_weekly_report():
         pass
