@@ -155,6 +155,7 @@ class db_client():
         match attribute:
             case "name":
                 self.cur.execute("UPDATE providers SET name = ? WHERE id = ?", (value, target_id))
+                print(f"editing name {value}")
 
                 # change phone number
             case "phone_number":
