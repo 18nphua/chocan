@@ -50,6 +50,59 @@ class chocan_service_cord():
             print("That member is already in the database.")
 
         return
+    
+    def edit_member(self):
+        database = db.db_client()  
+        
+        member_id = valid.read_int("Enter Member ID number: ")
+
+        #Verifies the member ID entered is 9-digits long.
+        while len(str(member_id)) != MEMBER_ID_LENGTH:
+            print(f"Please enter a 9-digit number.\n")
+            member_id = valid.read_int("Enter the Member ID number: ")
+
+        print("Member attributes: name, phone_number, street_address, city, state, zip_code")
+
+        attribute = valid.read_string("Enter the name of the attribute you would like to edit: ")
+
+        match attribute:
+            case "name":
+                value = valid.read_string("Enter a new name: ")
+
+            case "phone_number":
+                value = valid.read_int("Enter a new phone number: ")
+
+                while len(str(value)) != 10:
+                    print("Please enter a 10 digit phone number")
+                    value = valid.read_int("Enter a new phone number: ")
+
+            case "street_address":
+                value = valid.read_string("Enter a new street address: ")
+
+            case "city":
+                value = valid.read_string("Enter a city name (ex: Portland): ")
+
+            case "state":
+                value = valid.read_string("Enter a state name (ex: Oregon): ")
+
+            case "zip_code":
+                value = valid.read_int(f"Enter a new zip code ({ZIP_CODE_LENGTH} digits): ")
+
+                while len(str(zip_code)) != ZIP_CODE_LENGTH:
+                    print("Please enter a 5 digit zip code") 
+                    zip_code = valid.read_int("Enter the member's zip code: ")
+
+            case _:
+                print("\nUnknown attribute")
+                return
+            
+        if database.edit_member(member_id, value) == True:
+            print(f"{attribute} has been updated for member with id {member_id}.")
+
+        else:
+            print("No edits were made.")
+
+        return
         
     def remove_member(self):
         database = db.db_client()
