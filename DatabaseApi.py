@@ -6,6 +6,7 @@ Desc: This file defines the functionality of the mySQL api used by chocan to ena
 """
 
 import sqlite3
+import datetime
 
 class db_client():
     def __init__(self):
@@ -313,7 +314,14 @@ class db_client():
         if report_type == "member_weekly":
             id_num = self.clean_id(id_num, self.MEMBER_ID_RANGE)
             id_num = id_num - self.MEMBER_ID_RANGE
-            result = self.cur.execute(f'SELECT * FROM services_provided_log WHERE member_id={id_num}')
+
+            current_date = datetime.datetime.now()
+            a_week_ago = current_date - datetime.timedelta(days=7)
+
+            print(current_date)
+            print(a_week_ago)
+            result = self.cur.execute(f'SELECT * FROM services_provided_log WHERE member_id={id_num} AND date_service_provided<"{current_date}" AND date_service_provided>"{a_week_ago}"')
+
             return result.fetchall()
         if report_type == "provider_weekly":
             # To implement

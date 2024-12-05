@@ -38,10 +38,11 @@ prov_id_num = client.prov_get_id_from_name("John Doe 5")
 mem_id_num = client.mem_get_id_from_name("Jordan Dexter 7")
 
 
-if client.log_service("2024/03/01 10:21:00", "2024/03/01 10:25:00", prov_id_num, mem_id_num, 874526):
+if client.log_service("2024/12/03 10:21:00", "2024/03/01 10:25:00", prov_id_num, mem_id_num, 874526):
     print("logged")
 else:
     print("an error occured")
 
 result = client.generate_report("member_weekly", mem_id_num)
+
 print(result)
