@@ -294,7 +294,7 @@ class db_client():
         name_val = result.fetchone()
 
         if name_val:
-            return name_val
+            return name_val[0]
         return None
 
     def prov_get_all(self, provider_num : int):

@@ -310,7 +310,7 @@ class chocan_service_cord():
             return None
         
         service_code = database.serv_get_code_from_name(service_name)
-        
+
         #Displays the results of the database query.
         if service_code == None:
             print("Invalid service")
@@ -339,9 +339,6 @@ class chocan_service_cord():
             print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
             member_id = valid.read_int("Enter the Member ID number: ")
  
-        
- 
-            
         return
     
     def generate_member_report():
