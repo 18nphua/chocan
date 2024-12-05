@@ -8,19 +8,66 @@ import valid
 import DatabaseApi as db
 import datetime
 
+PHONE_NUM_LENGTH = 10
 MEMBER_ID_LENGTH = 9
 PROVIDER_ID_LENGTH = 9
 SERVICE_CODE_LENGTH = 5
 COMMENT_MAX_LENGTH = 100
-
+ZIP_CODE_LENGTH = 5
 class chocan_service_cord():
     #Manager functions
-    def add_member():
+    def add_member(self) -> None:
+        name = " "
+        phone_num = 0
+        street_address = " "
+        city = " "
+        state = " "
+        zip_code = 0
+        database = db.db_client()
+        was_added = False
 
-        pass
+        name = valid.read_string("Enter the name of member: ")
+        phone_num = valid.read_int("Enter the member's phone number: ")
 
-    def remove_member():
-        pass
+        while len(str(phone_num)) != 10:
+            print("Please enter a 10 digit phone number")
+            phone_num = valid.read_int("Enter the member's phone number: ")
+
+        street_address = valid.read_string("Enter the member's street address: ")
+        city = valid.read_string("Enter the member's home city: ")
+        state = valid.read_string("Enter the member's home state: ")
+
+        zip_code = valid.read_int("Enter the member's zip code: ")
+
+        while len(str(zip_code)) != ZIP_CODE_LENGTH:
+            print("Please enter a 5 digit zip code") 
+            zip_code = valid.read_int("Enter the member's zip code: ")
+
+        if database.add_member(name, phone_num, street_address, city, state, zip_code) == True:
+            print("Member was successfully added.")
+
+        else:
+            print("That member is already in the database.")
+
+        return
+        
+    def remove_member(self):
+        database = db.db_client()
+
+        member_id = valid.read_int("Enter Member ID number: ")
+
+        #Verifies the member ID entered is 9-digits long.
+        while len(str(member_id)) != MEMBER_ID_LENGTH:
+            print(f"Please enter a 9-digit number.\n")
+            member_id = valid.read_int("Enter the Member ID number: ")
+
+        if database.remove_member(member_id) == True: 
+            print("Member was successfully removed.")
+
+        else:
+            print("Member could not be found.")
+ 
+        return
 
     def add_provider():
         pass
@@ -49,11 +96,11 @@ class chocan_service_cord():
         #member_status = database.get_member_status(member_id)        
 
         #Displays the results of the database query.
-        if member_status is "good standing":
+        if member_status == "good standing":
             print("\nValidated")
             member_is_valid = True
     
-        elif member_status is "suspended":
+        elif member_status == "suspended":
             print("\nMember suspended\n")
 
         else:
@@ -62,20 +109,21 @@ class chocan_service_cord():
         return member_is_valid
 
     def find_service_code(self) -> int:
-        service_type = " "
+        service_name = " "
         service_code = 0
+        database = db.db_client()
     
-        service_type = valid.read_string("Enter the provider role (e.g., dietitian, therapist): ")
+        service_name = valid.read_string("Enter the provider role (e.g., dietitian, therapist): ")
 
         #Obtains the service corresponding to the specified service type.
-        #service_code = database.get_service_code(service_type)
+        service_code = database.serv_get_code_from_name(service_name)
 
         #Displays the results of the database query.
         if service_code == 0:
             print("Invalid service type")
             
         else:
-            print(f"Service Type: {service_type}    Service Code: {service_code}\n")
+            print(f"Service Type: {service_name}    Service Code: {service_code}\n")
  
         return service_code
 
@@ -141,6 +189,8 @@ class chocan_service_cord():
             #Writes information to disk.
             #Obtains the current time.
             formatted_date = now.strftime("%m-%d-%Y %H:%M:%S")
+
+            print("Bill sent.")
 
         elif member_status == "suspended": 
             print("Unable to generate a bill. The specified Member ID is suspended.")
