@@ -96,6 +96,7 @@ class db_client():
         if self.cur.rowcount == 0:#didn't change
             return False
         else:
+            self.cur.execute("COMMIT")#save changes
             return True #a member was edited
     
 
@@ -179,6 +180,14 @@ class db_client():
             case _:
                 print("Unkown attribute")
                 return False#nothing was changed
+
+        #this determines wether or not the database actually edited a provider or not
+        if self.cur.rowcount == 0:#didn't change
+            return False
+        else:
+            self.cur.execute("COMMIT")#save changes
+            return True #a provider was edited
+
     
     #the function will remove the provider that has the same id as provider_ID, will return true if removed
     # or false if nothing was removed. One small problem with this function is that it will remove all
@@ -424,12 +433,7 @@ class db_client():
             total_balance += service_list[0]
 
         return total_balance
-
-
-    #gets the status of whether or not the member's account is active.
-    def get_member_status(self, target_ID) -> bool:
-        #to implement
-        return True
+    
 
     #changes the members balance by addition or subtraction. will return the new
     #balance in the members account after the transaction.

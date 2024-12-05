@@ -387,7 +387,7 @@ class chocan_service_cord():
 
     def log_service(self) -> None:
         pass
-
+""""
 test = chocan_service_cord()
 database = db.db_client()
 
@@ -396,3 +396,4 @@ prov_id = database.prov_get_name_from_id(20000002)
 print(prov_id)
 # test.add_provider()
 test.edit_provider()
+"""
