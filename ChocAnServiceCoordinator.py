@@ -15,6 +15,10 @@ SERVICE_CODE_LENGTH = 6
 COMMENT_MAX_LENGTH = 100
 ZIP_CODE_LENGTH = 5
 class chocan_service_cord():
+    def __init__(self):
+        self.user_id = 0
+        self.database = db.db_client()
+
     #Manager functions
     def add_member(self) -> None:
         database = db.db_client()
@@ -322,8 +326,9 @@ class chocan_service_cord():
     def generate_bill(self) -> None:
         path = "reports/"
         database =  db.db_client()
-        member_id = valid.read_int("Enter Member ID number: ")
+        member_id = valid.read_int("Enter the Member ID number: ")
         timecode = datetime.datetime.now().strftime("%m-%d-%Y")
+
         while len(str(member_id)) != MEMBER_ID_LENGTH:
             print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
             member_id = valid.read_int("Enter the Member ID number: ")
@@ -334,19 +339,80 @@ class chocan_service_cord():
             return
         
         result = database.generate_report('member_weekly', member_id)
+        
         if result:
-            with open(f'{path}{member_id}_{timecode}', 'w') as file:
+            with open(f'{path}{member.replace(' ', '_')}_{timecode}.txt', 'w') as file:
                 count = 1
-                file.write(f'Name: {member}\t\tGenerated on: {timecode}')
-                file.write('======================================================')
+                total_cost = 0
+                current_balance = database.mem_get_balance_from_id(member_id)
+                
+                # Do the writing
+                file.write(f'Name: {member}\t\tGenerated on: {timecode}\n')
+                file.write('======================================================\n')
+                file.write(f'{'service':<10}{'service_name':<30}{'date_service_logged':<25}{'date_service_provided':<25}{'provider_id':<25}{'member_id':<25}{'member_name':<25}{'fee':<25}\n\n')
                 for service in result:
-                    file.write(f'{count}')
-                    for val in service:
-                        file.write()
+                    total_cost = total_cost + service[6]
+                    mem_id = database.clean_id(member_id, database.MEMBER_ID_RANGE)
+                    prov_id = database.clean_id(service[2], database.PROVIDER_ID_RANGE)
+                    
+                    file.write(f'{str(count) + '.':<10}{database.serv_get_name_from_code(service[5]):<30}')
+                    file.write(f'{service[0]:<25}')
+                    file.write(f'{service[1]:<25}')
+                    file.write(f'{database.clean_id(service[2], database.PROVIDER_ID_RANGE):<25}')
+                    file.write(f'{database.clean_id(service[3], database.MEMBER_ID_RANGE):<25}')
+                    file.write(f'{service[4]:<25}')
+                    file.write(f'${service[6]:.2f}')
+                    file.write('\n')
+                    count = count + 1
+                
+                current_balance = current_balance + total_cost
+                file.write('======================================================\n')
+                file.write(f"\nTOTAL: ${total_cost:.2f}   TOTAL SERVICES PROVIDED: {count}   CURRENT BALANCE: ${current_balance:.2f}")
+            file.close()
 
-    
-    def generate_member_report():
-        pass 
+            print(f"\nReport Written to: {path}{member_id}_{timecode}.txt\n")
+
 
     def log_service(self) -> None:
+        service_code_valid = False
+        date_provided = input("Date Service was Provided (format: YYYY/MM/DD): ")
+
+        s_code = -1
+        member_id = valid.read_int("Enter the Member ID number: ")
+        while len(str(member_id)) != MEMBER_ID_LENGTH:
+            print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
+            member_id = valid.read_int("Enter the Member ID number: ")
+
+        member = self.database.mem_get_name_from_id(member_id)
+        if not member:
+            print("Member not found. Aborting.")
+            return
+        while service_code_valid == False:
+            while len(str(s_code)) != SERVICE_CODE_LENGTH:
+                print(f"Please enter a {SERVICE_CODE_LENGTH}-digit number.")
+                print("     Type 0 to exit\n")
+                s_code = input("Enter service code (or type 'all' to view codes available): ")
+
+                if s_code == 'all':
+                    result = self.database.serv_get_all_services()
+                    for service in result:
+                        temp_code = self.database.clean_id(service[0], self.database.SERVICE_CODE_RANGE)
+                        print(f'Service Code: {temp_code}   Service Name: {service[1]} Fee: ${service[2]:.2f}')
+                if s_code == '0':
+                    return
+            
+            s_name = self.database.serv_get_name_from_code(int(s_code))
+            if s_name:
+                s_fee = self.database.serv_get_fee_from_service_code(int(s_code))
+                if not s_fee:
+                    return
+
+                if self.database.log_service(datetime.datetime.now(), datetime.datetime.strptime(date_provided, "%Y/%m/%d"), self.user_id, member_id - self.database.MEMBER_ID_RANGE, int(s_code)):
+                    print("Logged successfully.")
+                else:
+                    print("An error has occured. Aborting")
+                return
+            else:
+                print("Service code not found. Try again.")
+                s_code = -1
         pass

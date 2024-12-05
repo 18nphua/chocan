@@ -273,7 +273,21 @@ class db_client():
 
         return True
 
-    
+    def mem_get_balance_from_id(self, member_id_num):
+        if not member_id_num:
+            return True
+        
+        member_id_num = self.clean_id(member_id_num, self.MEMBER_ID_RANGE)
+        if not member_id_num:
+            return None
+        member_id_num = member_id_num - self.MEMBER_ID_RANGE
+        result = self.cur.execute(f'SELECT balance FROM members WHERE id={member_id_num}')
+        
+        balance = result.fetchone()
+
+        if balance:
+            return balance[0]
+        return None
     def prov_get_id_from_name(self, provider_name : str):
         result = self.cur.execute(f'SELECT id FROM providers WHERE name="{provider_name}"')
         result = result.fetchone()
@@ -315,6 +329,12 @@ class db_client():
         return None
     
     def serv_get_name_from_code(self, service_code : int):
+        if not service_code:
+            return None
+        service_code = self.clean_id(service_code, self.SERVICE_CODE_RANGE)
+        if not service_code:
+            return None
+        service_code = service_code - self.SERVICE_CODE_RANGE
         result = self.cur.execute(f'SELECT name FROM services WHERE service_code={service_code}')
         result = result.fetchone()
 
@@ -331,9 +351,17 @@ class db_client():
         return None
     
     def serv_get_fee_from_service_code(self, service_code):
+        if not service_code:
+            return None
+        
+        service_code = self.clean_id(service_code, self.SERVICE_CODE_RANGE)
+        if not service_code:
+            return None
+        service_code = service_code - self.SERVICE_CODE_RANGE
         result  = self.cur.execute(f'SELECT fee FROM services WHERE service_code={service_code}')
         result = result.fetchone()
 
+        
         if result:
             return result[0]
         return None

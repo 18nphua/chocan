@@ -1,0 +1,12 @@
+Name: Jordan Dexter		Generated on: 12-05-2024
+======================================================
+service   service_name                  date_service_logged      date_service_provided    provider_id              member_id                member_name              fee                      
+1.        Physical Therapy              2024/12/04 10:21:00      2024/12/01 10:00:00      200000002                100000001                Jordan Dexter            $150.00
+2.        Shock Therapy                 2024/12/04 10:21:00      2024/12/02 10:00:00      200000002                100000001                Jordan Dexter            $75.00
+3.        Anti-Chocolate Tablets        2024/12/04 10:21:00      2024/11/29 10:00:00      200000002                100000001                Jordan Dexter            $5.00
+4.        Physical Therapy              2024/12/04 10:21:00      2024/12/01 10:00:00      200000002                100000001                Jordan Dexter            $150.00
+5.        Shock Therapy                 2024/12/04 10:21:00      2024/12/02 10:00:00      200000002                100000001                Jordan Dexter            $75.00
+6.        Anti-Chocolate Tablets        2024/12/04 10:21:00      2024/11/29 10:00:00      200000002                100000001                Jordan Dexter            $5.00
+======================================================
+
+TOTAL: $460.00   TOTAL SERVICES PROVIDED: 7   CURRENT BALANCE: $460.00

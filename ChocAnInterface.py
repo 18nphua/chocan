@@ -56,6 +56,7 @@ class chocan_interface():
             print("Validated.")
             print(f"\nWelcome {provider_name}")
             validated = True
+            self.user_cord.user_id = provider_id
 
         else:
             print("\nInvalid Provider Number\n")
