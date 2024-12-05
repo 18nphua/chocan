@@ -282,6 +282,8 @@ class db_client():
             return None
         
         provider_id_num = self.clean_id(provider_id_num, self.PROVIDER_ID_RANGE)
+        if not provider_id_num:
+            return None
         provider_id_num = provider_id_num - self.PROVIDER_ID_RANGE
         result = self.cur.execute(f'SELECT name FROM providers WHERE id={provider_id_num}')
         name_val = result.fetchone()
@@ -302,8 +304,9 @@ class db_client():
         result = self.cur.execute(f'SELECT service_code FROM services WHERE UPPER(name)=UPPER("{service_name}")')
         result = result.fetchone()
         
+
         if result:
-            return result[0]
+            return self.clean_id(result[0], self.SERVICE_CODE_RANGE)
         return None
     
     def serv_get_name_from_code(self, service_code : int):
@@ -312,6 +315,14 @@ class db_client():
 
         if result:
             return result[0]
+        return None
+    
+    def serv_get_all_services(self):
+        result = self.cur.execute(f'SELECT * FROM services')
+        result = result.fetchall()
+
+        if result:
+            return result
         return None
     
     def serv_get_fee_from_service_code(self, service_code):
@@ -505,5 +516,7 @@ class db_client():
             return id_num
         if id_num > id_range and id_num < id_range * 10:
             return id_num
+        if id_num == id_range:
+            return None
         return None
     #################################### END  ###################################
