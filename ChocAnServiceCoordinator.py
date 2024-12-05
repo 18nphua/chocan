@@ -277,8 +277,7 @@ class chocan_service_cord():
 
         #Obtains the status of the member associated with the 
         #specified member ID number.
-        member_status = database.mem_get_status_from_id(member_id)        
-        member_status = database.mem_get_status_from_id(member_id)        
+        member_status = database.mem_get_status_from_id(member_id)      
 
         #Displays the results of the database query.
         if member_status == "VALIDATED":
@@ -311,9 +310,9 @@ class chocan_service_cord():
             return None
         
         service_code = database.serv_get_code_from_name(service_name)
-
+        
         #Displays the results of the database query.
-        if service_code == 0:
+        if service_code == None:
             print("Invalid service")
         else:
             print(f"Service Name: {service_name}    Service Code: {service_code}\n")

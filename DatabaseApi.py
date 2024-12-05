@@ -248,7 +248,10 @@ class db_client():
         if not member_id_num:
             return None
         
-        member_id_num = self.clean_id(member_id_num, self.MEMBER_ID_RANGE) - self.MEMBER_ID_RANGE
+        member_id_num = self.clean_id(member_id_num, self.MEMBER_ID_RANGE)
+        if not member_id_num:
+            return None
+        member_id_num = member_id_num - self.MEMBER_ID_RANGE
         result = self.cur.execute(f'SELECT status FROM members WHERE id={member_id_num}')
         status = result.fetchone()
 
