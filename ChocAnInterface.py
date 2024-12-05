@@ -106,6 +106,23 @@ class chocan_interface():
                   "\n7. Generate Report"
                   "\n8. Quit"
                 )
+            manager_choice = valid.read_int("Please choose an option: ")
+            if(manager_choice == 1):
+                pass
+            elif (manager_choice == 2):
+                pass
+            elif (manager_choice == 3):
+                pass
+            elif (manager_choice == 4):
+                pass
+            elif (manager_choice == 5):
+                pass
+            elif (manager_choice == 6):
+                pass
+            elif (manager_choice == 7):
+                pass
+            elif (manager_choice < 1 or manager_choice > 8):
+                print("\nInvalid Option.")
 
 
 """
