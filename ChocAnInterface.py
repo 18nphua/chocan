@@ -51,7 +51,7 @@ class chocan_interface():
 
         provider_name = database.prov_get_name_from_id(provider_id)        
 
-        if provider_name is not None:
+        if provider_name != None:
             print("Validated.")
             print(f"\nWelcome {provider_name}")
             validated = True
