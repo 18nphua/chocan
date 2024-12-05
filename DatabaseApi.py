@@ -19,6 +19,7 @@ class db_client():
         # Ranges
         self.MEMBER_ID_RANGE    = 100000000
         self.PROVIDER_ID_RANGE  = 200000000
+        self.SERVICE_CODE_RANGE = 300000
 
     #################################### MEMBER FUNCTIONALITY ###################################
 
@@ -290,25 +291,35 @@ class db_client():
     
     def serv_get_code_from_name(self, service_name : str):
         result = self.cur.execute(f'SELECT service_code FROM services WHERE UPPER(name)=UPPER("{service_name}")')
-        result = result.fetchone()[0]
+        result = result.fetchone()
         
         if result:
-            return result
+            return result[0]
         return None
     
     def serv_get_name_from_code(self, service_code : int):
         result = self.cur.execute(f'SELECT name FROM services WHERE service_code={service_code}')
-        result = result.fetchone()[0]
+        result = result.fetchone()
 
         if result:
-            return result
+            return result[0]
         return None
     
-    def get_fee_from_service_code(self, service_code):
+    def serv_get_fee_from_service_code(self, service_code):
         result  = self.cur.execute(f'SELECT fee FROM services WHERE service_code={service_code}')
-        result = result.fetchone()[0]
+        result = result.fetchone()
 
-        return result
+        if result:
+            return result[0]
+        return None
+    
+    def serv_get_service_code_from_name(self, service_name):
+        result  = self.cur.execute(f'SELECT service_code FROM services WHERE name="{service_name}"')
+        result = result.fetchone()
+
+        if result:
+            return result[0]
+        return None
     
     def log_service(self, current_date_time : str,
                      date_service_provided : str, 
@@ -372,6 +383,7 @@ class db_client():
             return result.fetchall()
 
         return None
+
 
     #calculates the total fees the member made from all the services
     def calculate_member_fees(self, member_ID) -> float:
@@ -439,6 +451,32 @@ class db_client():
         
         return new_balance #return the current balance of the member.
     
+    def add_service(self, service_name : str, fee : float):
+        if not service_name or not fee:
+            return False
+        
+        var_test = self.cur.execute(f'SELECT name FROM services WHERE name="{service_name}"')
+        var_test = var_test.fetchone()
+        if var_test:
+            return False
+
+        self.cur.execute(f'INSERT INTO services (name, fee) VALUES ("{service_name}", {fee})')
+        self.cur.execute(f'COMMIT')
+        return True
+    
+    def remove_service(self, service_code : int):
+        if not service_code:
+            return False
+        
+        service_code = self.clean_id(service_code, self.SERVICE_CODE_RANGE) - self.SERVICE_CODE_RANGE
+        var_test = self.cur.execute(f'SELECT name FROM services WHERE service_code={service_code}')
+        var_test = var_test.fetchone()
+        if not var_test:
+            return False
+
+        self.cur.execute(f'DELETE FROM services WHERE service_code={service_code}')
+        self.cur.execute(f'COMMIT')
+        return True
 
     def clean_id(self, id_num, id_range):
         if id_num < id_range and id_num > 0:

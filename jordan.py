@@ -5,6 +5,7 @@ from DatabaseApi import db_client
 client = db_client()
 
 
+"""
 
 id_num = client.prov_get_id_from_name("Jordan Dexter")
 client.edit_provider(id_num, "name", "Other Jordan")
@@ -36,5 +37,13 @@ client.add_member("Jordan Dexter 9", 5419937235, "1234 SE Street St.", "Portland
 prov_id_num = client.prov_get_id_from_name("John Doe 5")
 mem_id_num = client.mem_get_id_from_name("Jordan Dexter 7")
 
-if client.mem_set_status_from_id(mem_id_num, "suspended"):
-    print(client.mem_get_status_from_id(mem_id_num))
+client.log_service("2024/12/04 10:21:00", "2024/12/01 10:00:00", prov_id_num, mem_id_num, 735860)
+client.log_service("2024/12/04 10:21:00", "2024/11/28 10:00:00", prov_id_num, mem_id_num, 735860)
+client.log_service("2024/12/04 10:21:00", "2024/12/02 10:00:00", prov_id_num, mem_id_num, 735860)
+client.log_service("2024/12/04 10:21:00", "2024/11/29 10:00:00", prov_id_num, mem_id_num, 735860)
+
+print(client.generate_report("member_weekly", mem_id_num))
+"""
+
+
+print(client.serv_get_service_code_from_name("Shock asdfasdf"))

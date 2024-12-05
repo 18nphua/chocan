@@ -42,12 +42,11 @@ for i in range(4):
 sleep(1)
 
 print("     adding service codes...")
-codes = [874526, 230984, 563120, 982345, 781049, 346879, 129543, 460382, 591204, 735860]
 names = ["Massage", "Therapy", "Chiropracty", "Physical Therapy", "Rehabilition", "Shock Therapy", "Anti-Chocolate Tablets", "Retreat", "Couples Counciling", "Psycoanalysis"]
 costs = [100.00, 250.00, 50.00, 150.00, 300.00, 75.00, 5.00, 15.00, 200.00, 40.00]
 
 for i in range(10):
-    cur.execute(f'INSERT INTO services(service_code, name, fee) VALUES ({codes[i]}, "{names[i]}", {costs[i]})')
+    cur.execute(f'INSERT INTO services(name, fee) VALUES ("{names[i]}", {costs[i]})')
     cur.execute("COMMIT")
 
 print("done.")
