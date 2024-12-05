@@ -36,12 +36,5 @@ client.add_member("Jordan Dexter 9", 5419937235, "1234 SE Street St.", "Portland
 prov_id_num = client.prov_get_id_from_name("John Doe 5")
 mem_id_num = client.mem_get_id_from_name("Jordan Dexter 7")
 
-if client.log_service("2024/12/03 10:21:00", "2024/11/30 10:25:00", prov_id_num, mem_id_num, 874526):
-    #print("logged")
-    pass
-else:
-    print("an error occured")
-
-result = client.generate_report("member_weekly", mem_id_num)
-
-print(result)
+if client.mem_set_status_from_id(mem_id_num, "suspended"):
+    print(client.mem_get_status_from_id(mem_id_num))

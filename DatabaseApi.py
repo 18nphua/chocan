@@ -42,8 +42,8 @@ class db_client():
         
         if self.cur.fetchone()[0] == 0:#if person doesn't exist in the database -> add to database
             #add the member to the data base
-            result = self.cur.execute(f"""INSERT INTO members (id, name, phone_number, street_address, city, state, zip_code) VALUES 
-                ( NULL, '{name}', {phone_number}, '{street_address}', '{city}', '{state}', {zip_code});
+            result = self.cur.execute(f"""INSERT INTO members (id, name, phone_number, street_address, city, state, zip_code, last_payment_date, status, balance) VALUES 
+                ( NULL, '{name}', {phone_number}, '{street_address}', '{city}', '{state}', {zip_code}, NULL, "VALIDATED", 0.00)
                 """)
             self.cur.execute("COMMIT")
 
@@ -155,7 +155,6 @@ class db_client():
         match attribute:
             case "name":
                 self.cur.execute("UPDATE providers SET name = ? WHERE id = ?", (value, target_id))
-                print(f"editing name {value}")
 
                 # change phone number
             case "phone_number":
@@ -232,6 +231,33 @@ class db_client():
         if name_val:
             return name_val[0]
         return None
+
+    def mem_get_status_from_id(self, member_id_num):
+        if not member_id_num:
+            return None
+        
+        member_id_num = self.clean_id(member_id_num, self.MEMBER_ID_RANGE) - self.MEMBER_ID_RANGE
+        result = self.cur.execute(f'SELECT status FROM members WHERE id={member_id_num}')
+        status = result.fetchone()
+
+        if status:
+            return status[0]
+        return None
+    
+    def mem_set_status_from_id(self, member_id_num : int, status : str):
+        if not member_id_num:
+            return True
+        
+        status = status.upper()
+        if status != "VALIDATED" and status != "SUSPENDED":
+            return False
+        
+        member_id_num = self.clean_id(member_id_num, self.MEMBER_ID_RANGE) - self.MEMBER_ID_RANGE
+        self.cur.execute(f'UPDATE members SET status="{status}" WHERE id={member_id_num}')
+        self.cur.execute(f'COMMIT')
+
+        return True
+
     
     def prov_get_id_from_name(self, provider_name : str):
         result = self.cur.execute(f'SELECT id FROM providers WHERE name="{provider_name}"')
@@ -309,30 +335,43 @@ class db_client():
         return True
 
     def generate_report(self, report_type, id_num : int):
-        if not id_num:
-            return None
-        
+        current_date = datetime.datetime.now()
+        a_week_ago = current_date - datetime.timedelta(days=7)
+
+        current_date = current_date.strftime("%Y/%m/%d %H:%M:%S")
+        a_week_ago = a_week_ago.strftime("%Y/%m/%d %H:%M:%S")
+
+        # MEMBER WEEKLY REPORTING
         if report_type == "member_weekly":
+            if not id_num:
+                return None
             id_num = self.clean_id(id_num, self.MEMBER_ID_RANGE)
             id_num = id_num - self.MEMBER_ID_RANGE
-
-            current_date = datetime.datetime.now()
-            a_week_ago = current_date - datetime.timedelta(days=7)
-
-            current_date = current_date.strftime("%Y/%m/%d %H:%M:%S")
-            a_week_ago = a_week_ago.strftime("%Y/%m/%d %H:%M:%S")
-
             result = self.cur.execute(f'SELECT * FROM services_provided_log WHERE member_id={id_num} AND date_service_provided<"{current_date}" AND date_service_provided>"{a_week_ago}"')
 
             return result.fetchall()
         
+        # PROVIDER WEEKLY REPORTING
         if report_type == "provider_weekly":
-            # To implement
-            return None
+            if not id_num:
+                return None
+            
+            id_num = self.clean_id(id_num, self.PROVIDER_ID_RANGE)
+            id_num = id_num - self.PROVIDER_ID_RANGE
+            result = self.cur.execute(f'SELECT * FROM services_provided_log WHERE provider_id={id_num} AND date_service_provided<"{current_date}" AND date_service_provided>"{a_week_ago}"')
+
+            return result.fetchall()
+        
+        # ALL SERVICES PROVIDED REPORTING
         if report_type == "all_services_weekly":
-            # To implement
-            return None
-        return
+            if id_num:
+                return None
+
+            result = self.cur.execute(f'SELECT * FROM services_provided_log WHERE date_service_provided<"{current_date}" AND date_service_provided>"{a_week_ago}"')
+
+            return result.fetchall()
+
+        return None
 
     #calculates the total fees the member made from all the services
     def calculate_member_fees(self, member_ID) -> float:

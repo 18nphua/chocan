@@ -13,7 +13,7 @@ path = "database"
 
 database    =  'chocan.db'
 tables      = ['members', 'providers', 'services_provided_log', 'services']
-schemas     = ['(id INTEGER PRIMARY KEY, name varchar, phone_number int, street_address varchar, city varchar, state varchar, zip_code int, balance float)',
+schemas     = ['(id INTEGER PRIMARY KEY, name varchar, phone_number int, street_address varchar, city varchar, state varchar, zip_code int, last_payment_date DATETIME, status varchar, balance float)',
                '(id INTEGER PRIMARY KEY, name varchar, phone_number int, street_address varchar, city varchar, state varchar, zip_code int)',
                '(date_service_logged DATETIME, date_service_provided DATETIME, provider_id int, member_id int, member_name varchar, s_code int, fee float, FOREIGN KEY (member_id) REFERENCES members(id), FOREIGN KEY (provider_id) REFERENCES providers(id), FOREIGN KEY (s_code) REFERENCES services(service_code))',
                '(service_code INTEGER PRIMARY KEY, name varchar, fee float)']
