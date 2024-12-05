@@ -123,68 +123,92 @@ class chocan_service_cord():
         return
 
     def add_provider(self):
-        user_prov = db.db_client()
-        name = (input("Enter your Name: "))
-        user_phone = (input("Enter your phone: "))
-        user_str = (input("Enter your street: "))
-        user_city = (input("Enter your City: "))
-        user_state = (input("Enter your state: "))
-        user_zip= (input("Enter your zip: "))
+        try:
+            user_prov = db.db_client()
+            name = input("Enter your Name: ")
+            user_phone = input("Enter your phone: ")
+            user_str = input("Enter your street: ")
+            user_city = input("Enter your City: ")
+            user_state = input("Enter your state: ")
+            user_zip = input("Enter your zip: ")
 
-        if_added =user_prov.add_provider(name,user_phone,user_str,user_city,user_state,user_zip)
+            if not all([name, user_phone, user_str, user_city, user_state, user_zip]):
+                print("Error: All fields must be filled out.")
+                return False
 
-        if(if_added == True):
-            print("Provider has been added!\n")
-        else:
-            print("No new provider was added\n")
+            if_added = user_prov.add_provider(name, user_phone, user_str, user_city, user_state, user_zip)
 
-        return if_added
+            if if_added:
+                print("Provider has been added!\n")
+            else:
+                print("No new provider was added.\n")
+
+            return if_added
+
+        except Exception as e:
+            print(f"An error occurred while adding the provider: {e}")
+            return False
 
 
     def remove_provider(self):
-        provider_is_valid = False
-        provider_status = None
-        provider_id = 0
-        user_prov = db.db_client()
+        try:
+            user_prov = db.db_client()
+            provider_id = valid.read_int("Enter Provider ID number: ")
 
-        provider_id = valid.read_int("Enter Provider ID number: ")
+            # Verifies the provider ID entered is 9-digits long.
+            while len(str(provider_id)) != MEMBER_ID_LENGTH:
+                print("Please enter a 9-digit number.\n")
+                provider_id = valid.read_int("Enter the Provider ID number: ")
 
-        #Verifies the member ID entered is 9-digits long.
-        while len(str(provider_id)) != MEMBER_ID_LENGTH:
-            print(f"Please enter a 9-digit number.\n")
-            provider_id = valid.read_int("Enter the Provider ID number: ")
+            if_removed = user_prov.remove_provider(provider_id)
 
-        if_removed = user_prov.remove_provider(provider_id)
+            if if_removed:
+                print("Provider has been removed!\n")
+            else:
+                print("Provider has not been removed!\n")
 
-        if(if_removed):
-            print("Provider has been removed!\n")
-        else:
-            print("Provider has not been removed!\n")
+        except ValueError as ve:
+            print(f"Invalid input: {ve}")
+        except Exception as e:
+            print(f"An error occurred while removing the provider: {e}")
+
 
     def edit_provider(self):
-        provider_id = 0
-        user_prov = db.db_client()
+        try:
+            user_prov = db.db_client()
+            provider_id = valid.read_int("Enter Target ID number to edit: ")
 
-        provider_id = valid.read_int("Enter Target ID number to edit: ")
+            # Verifies the provider ID entered is 9-digits long.
+            while len(str(provider_id)) != MEMBER_ID_LENGTH:
+                print("Please enter a 9-digit number.\n")
+                provider_id = valid.read_int("Enter the Provider ID number: ")
 
-        #Verifies the provider ID entered is 9-digits long.
-        while len(str(provider_id)) != MEMBER_ID_LENGTH:
-            print(f"Please enter a 9-digit number.\n")
-            provider_id = valid.read_int("Enter the Provider ID number: ")
+            attribute = valid.read_string("Enter attribute: ")
+            value = input("Enter the value: ")
 
-        
-        attribute = valid.read_string("Enter attribute: ")
-        value = input("Enter the value: ")
+            if not attribute:
+                print("Error: Attribute cannot be empty.")
+                return False
 
-        user_prov = db.db_client()
-        if_added =user_prov.edit_provider(provider_id,attribute,value)
+            if not value:
+                print("Error: Value cannot be empty.")
+                return False
 
-        if(if_added == True):
-            print("Provider has been edited!\n")
-        else:
-            print("provider has not been editied\n")
+            if_added = user_prov.edit_provider(provider_id, attribute, value)
 
-        return if_added
+            if if_added:
+                print("Provider has been edited!\n")
+            else:
+                print("Provider has not been edited.\n")
+
+            return if_added
+
+        except ValueError as ve:
+            print(f"Invalid input: {ve}")
+            return False
+        except Exception as e:
+            print(f"An error occurred while editing the provider: {e}")
+            return False
 
 
     def generate_weekly_report():
