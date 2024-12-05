@@ -63,6 +63,7 @@ class db_client():
     #changed(attribute, example is name) and the parameter value is what will be used to replace
     #the old value. Returns true if a change happended and false if nothing was changed.
     def edit_member(self, target_id : int, attribute : str, value):
+        # attribute options: name, phone_number, street_address, city, state, zip_code
         # match case
         match attribute:
                 # change name
@@ -153,6 +154,7 @@ class db_client():
         return False #no new entries was added
     
     def edit_provider(self, target_id : int, attribute : str, value):
+        # attribute options: name, phone_number, street_address, city, state, zip_code
         # match case
         match attribute:
             case "name":
@@ -444,12 +446,7 @@ class db_client():
             total_balance += service_list[0]
 
         return total_balance
-
-
-    #gets the status of whether or not the member's account is active.
-    def get_member_status(self, target_ID) -> bool:
-        #to implement
-        return True
+    
 
     #changes the members balance by addition or subtraction. will return the new
     #balance in the members account after the transaction.
