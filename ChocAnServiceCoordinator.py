@@ -161,6 +161,32 @@ class chocan_service_cord():
         else:
             print("Provider has not been removed!\n")
 
+    def edit_provider(self):
+        provider_id = 0
+        user_prov = db.db_client()
+
+        provider_id = valid.read_int("Enter Target ID number to edit: ")
+
+        #Verifies the provider ID entered is 9-digits long.
+        while len(str(provider_id)) != MEMBER_ID_LENGTH:
+            print(f"Please enter a 9-digit number.\n")
+            provider_id = valid.read_int("Enter the Provider ID number: ")
+
+        
+        attribute = valid.read_string("Enter attribute: ")
+        value = input("Enter the value: ")
+
+        user_prov = db.db_client()
+        if_added =user_prov.edit_provider(provider_id,attribute,value)
+
+        if(if_added == True):
+            print("Provider has been edited!\n")
+        else:
+            print("provider has not been editied\n")
+
+        return if_added
+
+
     def generate_weekly_report():
         pass
 
@@ -291,3 +317,12 @@ class chocan_service_cord():
 
     def log_service(self) -> None:
         pass
+
+test = chocan_service_cord()
+user_prov = db.db_client()
+
+prov_id = user_prov.prov_get_name_from_id(20000002)
+
+print(prov_id)
+# test.add_provider()
+test.edit_provider()
