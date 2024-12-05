@@ -1,12 +1,9 @@
-
-import provider as prov
-import DatabaseApi as db
-import ChocAnInterface as ui
+from ChocAnInterface import *
 
 import datetime 
 import valid 
 def main():
-    menu = ui.chocan_interface()
+    menu = chocan_interface()
 
     menu.start_menu()    
 
