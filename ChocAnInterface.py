@@ -51,7 +51,7 @@ class chocan_interface():
 
         provider_name = database.prov_get_name_from_id(provider_id)        
 
-        if provider_name != None:
+        if provider_name == None:
             print("Validated.")
             print(f"\nWelcome {provider_name}")
             validated = True
@@ -108,32 +108,18 @@ class chocan_interface():
                 )
             manager_choice = valid.read_int("Please choose an option: ")
             if(manager_choice == 1):
-                self.user_cord.add_member()
+                pass
             elif (manager_choice == 2):
-                self.user_cord.remove_member()
+                pass
             elif (manager_choice == 3):
-                self.user_cord.edit_member()
+                pass
             elif (manager_choice == 4):
-                self.user_cord.add_provider()
+                pass
             elif (manager_choice == 5):
-                self.user_cord.remove_provider()
+                pass
             elif (manager_choice == 6):
-                self.user_cord.edit_provider()
+                pass
             elif (manager_choice == 7):
-                self.user_cord.generate_weekly_report()
+                pass
             elif (manager_choice < 1 or manager_choice > 8):
                 print("\nInvalid Option.")
-
-
-
-
-"""
-    def main(self):
-        print("Hello this is the start of chocant")
-        print("Hello this is a test.")
-        self.start_menu()
-
-if __name__ == "__main__":
-    user_menu = chocan_interface()
-    user_menu.main()
-"""

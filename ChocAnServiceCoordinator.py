@@ -265,6 +265,7 @@ class chocan_service_cord():
         member_is_valid = False
         member_status = None
         member_id = 0
+        database = db.db_client()
 
         member_id = valid.read_int("Enter Member ID number: ")
 
@@ -275,7 +276,7 @@ class chocan_service_cord():
 
         #Obtains the status of the member associated with the 
         #specified member ID number.
-        member_status = database.get_member_status(member_id)        
+        member_status = database.mem_get_status_from_id(member_id)        
 
         #Displays the results of the database query.
         if member_status == "good standing":
@@ -329,7 +330,7 @@ class chocan_service_cord():
             print(f"Please enter a {MEMBER_ID_LENGTH}-digit number.\n")
             member_id = valid.read_int("Enter the Member ID number: ")
  
-        member_status = database.get_member_status(member_id)        
+        member_status = database.mem_get_status_from_id(member_id)        
 
         if member_status == "good standing":
             print("\nValidated")        
