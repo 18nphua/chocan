@@ -433,12 +433,7 @@ class db_client():
             total_balance += service_list[0]
 
         return total_balance
-
-
-    #gets the status of whether or not the member's account is active.
-    def get_member_status(self, target_ID) -> bool:
-        #to implement
-        return True
+    
 
     #changes the members balance by addition or subtraction. will return the new
     #balance in the members account after the transaction.
