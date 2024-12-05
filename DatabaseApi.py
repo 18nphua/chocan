@@ -365,10 +365,38 @@ class db_client():
         #to implement
         return True
 
-    #changes the members balance by addition or subtraction.
-    def deposit_member_balance(self, target_ID, amount: float):
-        # to implement
-        return
+    #changes the members balance by addition or subtraction. will return the new
+    #balance in the members account after the transaction.
+    def deposit_member_balance(self, target_ID, amount: float) -> float:
+        #validate member_ID
+        if not isinstance(target_ID, int):
+            if isinstance(target_ID, str):#if its a string then convert to a int
+                target_ID = int(target_ID)
+            else:
+                print("Invalid ID")
+                return None
+            
+        #validate amount is a float, otherwise return false
+        if not isinstance(amount, float):
+            if isinstance(amount, int):#if its a string then convert to a int
+                amount = float(amount)
+            else:
+                print("Invalid amount type")
+                return None
+        
+        #get the current balance and then add amount to it.
+        current_balance = self.cur.execute("""SELECT balance from members
+                                                    WHERE id = ?""", (target_ID,))
+        current_balance = self.cur.fetchall()
+        
+        #create the new balance for the member
+        new_balance = current_balance[0] + amount
+
+        #insert the new balance to the member to update the balance variable
+        self.cur.execute("UPDATE members SET balance = ? WHERE id = ?", (new_balance, target_ID))
+        
+        return new_balance #return the current balance of the member.
+    
 
     def clean_id(self, id_num, id_range):
         if id_num < id_range and id_num > 0:
