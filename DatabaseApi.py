@@ -247,7 +247,7 @@ class db_client():
         provider_id_num = self.clean_id(provider_id_num, self.PROVIDER_ID_RANGE)
         provider_id_num = provider_id_num - self.PROVIDER_ID_RANGE
         result = self.cur.execute(f'SELECT name FROM providers WHERE id={provider_id_num}')
-        name_val = result.fetchone()[0]
+        name_val = result.fetchone()
 
         if name_val:
             return name_val
