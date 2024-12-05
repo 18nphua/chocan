@@ -47,8 +47,8 @@ class chocan_interface():
         provider_id = valid.read_int("\nPlease enter your provider ID number: ")
 
         while len(str(provider_id)) != PROVIDER_ID_LENGTH:
-            print(f"Please enter a 9-digit number.\n")
-            self.provider_id = valid.read_int("Please enter your Provider ID number: ")
+            print(f"Please enter a {PROVIDER_ID_LENGTH}-digit number.\n")
+            provider_id = valid.read_int("Please enter your Provider ID number: ")
 
         provider_name = database.prov_get_name_from_id(provider_id)        
 
