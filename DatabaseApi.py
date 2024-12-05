@@ -337,8 +337,11 @@ class db_client():
         provider_id_num = self.clean_id(provider_id_num, self.PROVIDER_ID_RANGE) - self.PROVIDER_ID_RANGE
 
         member_name = self.mem_get_name_from_id(member_id_num)
-        fee = self.get_fee_from_service_code(service_code)
+        fee = self.serv_get_fee_from_service_code(service_code)
 
+        if not fee:
+            return False
+        
         result = self.cur.execute(f"""INSERT INTO services_provided_log(date_service_logged, date_service_provided, provider_id, member_id, member_name, s_code, fee) VALUES
                                         ("{current_date_time}", "{date_service_provided}", {provider_id_num}, {member_id_num}, "{member_name}", {service_code}, {fee})""")
         result = self.cur.execute(f'COMMIT')
@@ -346,6 +349,15 @@ class db_client():
         return True
 
     def generate_report(self, report_type, id_num : int):
+        # id_num can be either a member number or a provider number
+        #
+        # if the report type is "all_services_weekly", id num MUST BE None.
+        #
+        # if the report requested is "member_weekly" the program returns all
+        # services provided to that member in one big array
+        #       like this: [(blah, blah...), (blah, blah...), ...]
+        # 
+
         current_date = datetime.datetime.now()
         a_week_ago = current_date - datetime.timedelta(days=7)
 

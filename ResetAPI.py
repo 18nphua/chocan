@@ -41,14 +41,6 @@ for i in range(4):
     result = cur.execute(f"CREATE TABLE {tables[i]} {schemas[i]}")
 sleep(1)
 
-print("     adding service codes...")
-names = ["Massage", "Therapy", "Chiropracty", "Physical Therapy", "Rehabilition", "Shock Therapy", "Anti-Chocolate Tablets", "Retreat", "Couples Counciling", "Psycoanalysis"]
-costs = [100.00, 250.00, 50.00, 150.00, 300.00, 75.00, 5.00, 15.00, 200.00, 40.00]
-
-for i in range(10):
-    cur.execute(f'INSERT INTO services(name, fee) VALUES ("{names[i]}", {costs[i]})')
-    cur.execute("COMMIT")
-
 print("done.")
 
 # Keys setup
