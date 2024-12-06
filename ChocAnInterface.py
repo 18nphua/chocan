@@ -35,7 +35,7 @@ class chocan_interface():
                 self.manager_menu()
 
             elif (terminal_choice < 1 or terminal_choice > 3):
-                print("Invalid choice selected\n")
+                print("Invalid option selected")
             
         
     def read_provider_id(self) -> bool: 
@@ -59,7 +59,7 @@ class chocan_interface():
             self.user_cord.user_id = provider_id
 
         else:
-            print("\nInvalid Provider Number\n")
+            print("Invalid Provider Number")
 
         return validated
 
@@ -91,7 +91,7 @@ class chocan_interface():
                 self.user_cord.log_service()
 
             elif (prov_choice < 1 or prov_choice > 5):
-                print("\nInvalid choice selected.")
+                print("Invalid option selected.")
 
 
     
@@ -110,7 +110,7 @@ class chocan_interface():
                   "\n7. Generate Report"
                   "\n8. Quit"
                 )
-            manager_choice = valid.read_int("Please choose an option: ")
+            manager_choice = valid.read_int("\nPlease choose an option: ")
             if(manager_choice == 1):
                 self.user_cord.add_member()
             elif (manager_choice == 2):
@@ -126,4 +126,4 @@ class chocan_interface():
             elif (manager_choice == 7):
                 self.user_cord.generate_weekly_report()
             elif (manager_choice < 1 or manager_choice > 8):
-                print("\nInvalid Option.")
+                print("Invalid option selected.")
