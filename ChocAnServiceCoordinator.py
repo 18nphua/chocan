@@ -376,8 +376,11 @@ class chocan_service_cord():
 
     def log_service(self) -> None:
         service_code_valid = False
+        s_name = None
         date_provided = input("Date Service was Provided (format: YYYY/MM/DD): ")
+        time_provided = input("Time of day the service was provided (format: HH:SS): ")
 
+        timestamp = date_provided + " " + time_provided + ":00"
         s_code = -1
         member_id = valid.read_int("Enter the Member ID number: ")
         while len(str(member_id)) != MEMBER_ID_LENGTH:
@@ -388,6 +391,7 @@ class chocan_service_cord():
         if not member:
             print("Member not found. Aborting.")
             return
+        
         while service_code_valid == False:
             while len(str(s_code)) != SERVICE_CODE_LENGTH:
                 print(f"Please enter a {SERVICE_CODE_LENGTH}-digit number.")
@@ -399,16 +403,21 @@ class chocan_service_cord():
                     for service in result:
                         temp_code = self.database.clean_id(service[0], self.database.SERVICE_CODE_RANGE)
                         print(f'Service Code: {temp_code}   Service Name: {service[1]} Fee: ${service[2]:.2f}')
-                if s_code == '0':
+                        s_code = -1
+                elif s_code == '0':
                     return
+                elif not self.database.serv_get_name_from_code(int(s_code)):
+                    s_code = -1
+                    print("Invalid service code. Try again")
             
             s_name = self.database.serv_get_name_from_code(int(s_code))
             if s_name:
                 s_fee = self.database.serv_get_fee_from_service_code(int(s_code))
                 if not s_fee:
+                    print("An error has occured. Aborting")
                     return
 
-                if self.database.log_service(datetime.datetime.now(), datetime.datetime.strptime(date_provided, "%Y/%m/%d"), self.user_id, member_id - self.database.MEMBER_ID_RANGE, int(s_code)):
+                if self.database.log_service(datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"), timestamp, self.user_id, member_id, int(s_code)):
                     print("Logged successfully.")
                 else:
                     print("An error has occured. Aborting")
