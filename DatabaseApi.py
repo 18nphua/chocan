@@ -388,7 +388,7 @@ class db_client():
         
         member_id_num = self.clean_id(member_id_num, self.MEMBER_ID_RANGE) - self.MEMBER_ID_RANGE
         provider_id_num = self.clean_id(provider_id_num, self.PROVIDER_ID_RANGE) - self.PROVIDER_ID_RANGE
-
+        service_code = self.clean_id(service_code, self.SERVICE_CODE_RANGE) - self.SERVICE_CODE_RANGE
         member_name = self.mem_get_name_from_id(member_id_num)
         fee = self.serv_get_fee_from_service_code(service_code)
 
