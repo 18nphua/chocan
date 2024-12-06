@@ -196,6 +196,9 @@ class chocan_service_cord():
         except Exception as e:
             print(f"An error occurred while removing the provider: {e}")
 
+        return was_removed  # Ensure the method returns the expected result
+
+
 
     def edit_provider(self):
         database = db.db_client()

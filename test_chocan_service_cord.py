@@ -35,3 +35,32 @@ def test_remove_member_success(mock_database):
 
     assert result is True
     mock_instance.remove_member.assert_called_once_with(123456789)
+
+#testing provider functions.
+def test_add_provider_success(mock_database):
+    mock_instance = mock_database.return_value
+    mock_instance.add_provider.return_value = True
+
+    service_cord = chocan_service_cord()
+
+    with patch("ChocAnServiceCoordinator.valid.read_string", side_effect=["Provider Name", "456 Elm St", "Los Angeles", "CA"]):
+        with patch("ChocAnServiceCoordinator.valid.read_int", side_effect=[9876543210, 90001]):
+            result = service_cord.add_provider()
+
+    assert result is True
+    mock_instance.add_provider.assert_called_once_with(
+        "Provider Name", 9876543210, "456 Elm St", "Los Angeles", "CA", 90001
+    )
+
+# Test for remove_provider
+def test_remove_provider_success(mock_database):
+    mock_instance = mock_database.return_value
+    mock_instance.remove_provider.return_value = True
+
+    service_cord = chocan_service_cord()
+
+    with patch("ChocAnServiceCoordinator.valid.read_int", return_value=123456789):
+        result = service_cord.remove_provider()
+
+    assert result is True
+    mock_instance.remove_provider.assert_called_once_with(123456789)
