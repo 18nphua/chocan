@@ -265,7 +265,53 @@ class chocan_service_cord():
         return was_edited
 
     def generate_weekly_report(self):
-        pass
+            member_id = 1000000001
+            report_type = 1
+            report_type_s = ""
+
+            try:
+                member_id = valid.read_int("Enter Member ID number to edit: ")
+                # I would need to check if the valid is correct!
+            except ValueError:
+                print("Error, invalid input!") 
+
+            flag = True
+            while(flag):
+                report_type = valid.read_int("\t 1. Member weekly \n\t 2. Provider weekly \n\t 3. All services weekly \n\n Input:\t")
+                
+                if(report_type == 1):
+                    report_type_s += "member_weekly"
+                    flag = False
+                elif(report_type == 2):
+                    report_type_s += "provider_weekly"
+                    flag = False
+                elif(report_type == 3): 
+                    report_type_s += "all_services_weekly"
+                    member_id = None
+                    flag = False
+                else:
+                    print("Wrong Input, please try again!")
+
+            temp_class = db.db_client()
+
+            report =  temp_class.generate_report(report_type_s, member_id)
+            print(report)
+
+            file_name = datetime.datetime.now().strftime("%m-%d-%Y")
+            file_name += "_" 
+            file_name += str(member_id)
+            file_name += ".txt"
+            
+            f= open(file_name, "x")
+            f.write("Hello")
+
+            # my_file_name = ""
+            # my_file_name += file_name
+            # print(my_file_name)
+            # # f = open("myfile.txt", "x")
+            # f.write
+
+            return report
 
     #Provider functions
     def read_member_id(self) -> bool:
