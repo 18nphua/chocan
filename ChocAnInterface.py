@@ -107,7 +107,7 @@ class chocan_interface():
                   "\n4. Add Provider"
                   "\n5. Remove Provider"
                   "\n6. Update Provider Record"
-                  "\n7. Generate Report"
+                  "\n7. Generate Weekly Report"
                   "\n8. Quit"
                 )
             manager_choice = valid.read_int("\nPlease choose an option: ")

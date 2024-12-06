@@ -265,6 +265,37 @@ class chocan_service_cord():
         return was_edited
 
     def generate_weekly_report(self):
+        path = "reports/manager_reports/"
+
+        result  = self.database.generate_report('all_services_weekly', None)
+        if not result:
+            print("an error has occured. Report could not be generated.")
+        
+        with open(f'{path}{datetime.datetime.now().strftime("%m-%d-%Y")}.txt', 'w') as file:
+                count = 1
+                total_cost = 0
+                # Do the writing
+                file.write(f'Name: MANAGER WEEKLY\t\tGenerated on: {datetime.datetime.now().strftime("%m-%d-%Y")}\n')
+                file.write('======================================================\n')
+                file.write(f'{"service":<10}{"service_name":<30}{"date_service_logged":<25}{"date_service_provided":<25}{"provider_id":<25}{"member_id":<25}{"member_name":<25}{"fee":<25}\n\n')
+
+                for service in result:
+                    total_cost = total_cost + service[6]
+                    file.write(f'{str(count) + ".":<10}{self.database.serv_get_name_from_code(service[5]):<30}')
+                    file.write(f'{service[0]:<25}')
+                    file.write(f'{service[1]:<25}')
+                    file.write(f'{self.database.clean_id(service[2], self.database.PROVIDER_ID_RANGE):<25}')
+                    file.write(f'{self.database.clean_id(service[3], self.database.MEMBER_ID_RANGE):<25}')
+                    file.write(f'{service[4]:<25}')
+                    file.write(f'${service[6]:.2f}')
+                    file.write('\n')
+                    count = count + 1
+                
+                file.write('======================================================\n')
+                file.write(f"\nTOTAL BILLED: ${total_cost:.2f}   TOTAL SERVICES PROVIDED: {count-1}")
+        file.close()
+
+        print("\nLogged successfully.")
         pass
 
     #Provider functions
@@ -379,11 +410,23 @@ class chocan_service_cord():
 
     def log_service(self) -> None:
         service_code_valid = False
-        s_name = None
-        date_provided = input("Date Service was Provided (format: YYYY/MM/DD): ")
-        time_provided = input("Time of day the service was provided (format: HH:SS): ")
+        datetime_is_valid = False
 
-        timestamp = date_provided + " " + time_provided + ":00"
+        while not datetime_is_valid:
+            date_provided = input("Date Service was Provided (format: YYYY/MM/DD): ")
+            time_provided = input("Time of day the service was provided (format: HH:SS): ")
+
+            timestamp = date_provided + " " + time_provided + ":00"
+
+            try:
+                if timestamp != datetime.datetime.strptime(timestamp, "%Y/%m/%d %H:%M:%S").strftime('%Y/%m/%d %H:%M:%S'):
+                    raise ValueError
+                datetime_is_valid = True
+            except ValueError:
+                datetime_is_valid = False
+                print("\n*** Error. Ensure that date and time format are YYYY/MM/DD and HH:MM\n")
+            
+        s_name = None
         s_code = -1
         member_id = valid.read_int("Enter the Member ID number: ")
         while len(str(member_id)) != MEMBER_ID_LENGTH:
@@ -420,8 +463,8 @@ class chocan_service_cord():
                     print("An error has occured. Aborting")
                     return
 
-                if self.database.log_service(datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"), timestamp, self.user_id, member_id, int(s_code)):
-                    print("Logged successfully.")
+                if self.database.log_service(datetime.datetime.now().strftime("%Y/%m/%d %H:%M") + ":00", timestamp, self.user_id, member_id, int(s_code)):
+                    print("\nLogged successfully.")
                 else:
                     print("An error has occured. Aborting")
                 return
