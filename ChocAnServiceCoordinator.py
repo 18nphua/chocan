@@ -341,7 +341,7 @@ class chocan_service_cord():
         result = database.generate_report('member_weekly', member_id)
         
         if result:
-            with open(f'{path}{member.replace(' ', '_')}_{timecode}.txt', 'w') as file:
+            with open(f'{path}{member.replace(" ", "_")}_{timecode}.txt', 'w') as file:
                 count = 1
                 total_cost = 0
                 current_balance = database.mem_get_balance_from_id(member_id)
@@ -349,13 +349,14 @@ class chocan_service_cord():
                 # Do the writing
                 file.write(f'Name: {member}\t\tGenerated on: {timecode}\n')
                 file.write('======================================================\n')
-                file.write(f'{'service':<10}{'service_name':<30}{'date_service_logged':<25}{'date_service_provided':<25}{'provider_id':<25}{'member_id':<25}{'member_name':<25}{'fee':<25}\n\n')
+                file.write(f'{{"service":<10}}{{"service_name":<30}}{{"date_service_logged":<25}}{{"date_service_provided":<25}}{{"provider_id":<25}}{{"member_id":<25}}{{"member_name":<25}}{{"fee":<25}}\n\n')
+
                 for service in result:
                     total_cost = total_cost + service[6]
                     mem_id = database.clean_id(member_id, database.MEMBER_ID_RANGE)
                     prov_id = database.clean_id(service[2], database.PROVIDER_ID_RANGE)
                     
-                    file.write(f'{str(count) + '.':<10}{database.serv_get_name_from_code(service[5]):<30}')
+                    file.write(f'{str(count) + ".":<10}{database.serv_get_name_from_code(service[5]):<30}')
                     file.write(f'{service[0]:<25}')
                     file.write(f'{service[1]:<25}')
                     file.write(f'{database.clean_id(service[2], database.PROVIDER_ID_RANGE):<25}')
