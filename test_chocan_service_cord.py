@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from ChocAnServiceCoordinator import chocan_service_cord
 
 # Mocking the db_client class to simulate database behavior
@@ -43,13 +43,13 @@ def test_add_provider_success(mock_database):
 
     service_cord = chocan_service_cord()
 
-    with patch("ChocAnServiceCoordinator.valid.read_string", side_effect=["Provider Name", "456 Elm St", "Los Angeles", "CA"]):
+    with patch("ChocAnServiceCoordinator.valid.read_string", side_effect=["Provider Name", "Fake Street", "Los Angeles", "CA"]):
         with patch("ChocAnServiceCoordinator.valid.read_int", side_effect=[9876543210, 90001]):
             result = service_cord.add_provider()
 
     assert result is True
     mock_instance.add_provider.assert_called_once_with(
-        "Provider Name", 9876543210, "456 Elm St", "Los Angeles", "CA", 90001
+        "Provider Name", 9876543210, "Fake Street", "Los Angeles", "CA", 90001
     )
 
 # Test for remove_provider
